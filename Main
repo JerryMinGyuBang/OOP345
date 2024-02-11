@@ -1,0 +1,232 @@
+// StockTradingSystem.cpp : This file contains the 'main' function. Program execution begins and ends there.
+//
+
+#include <iostream>
+
+using namespace std;
+
+//global variable
+int loggedin = 0;
+
+//option 1
+void Option1()
+{
+    int selection;
+    do
+    {
+        //Option 1 
+        cout << "Option 1 Menu" << endl;
+        cout << "1: Option1" << endl;
+        cout << "2: Option2" << endl;
+        cout << "3: Option3" << endl;
+        cout << "10: clear screen" << endl;
+        cout << "0: Return to main menu" << endl;
+        cout << "Enter selection:" << endl;
+        cin >> selection;
+        if (selection == 1)
+        {
+            cout << "You have Entered Option 1" << endl;
+            system("pause");
+        }
+        else if (selection == 2)
+        {
+            cout << "You have Entered Option 2" << endl;
+            system("pause");
+        }
+        else if (selection == 3)
+        {
+            cout << "You have Entered Option 3" << endl;
+            system("pause");
+        }
+        else if (selection == 10)
+        {
+            system("CLS");
+        }
+        else
+        {
+
+            cout << "Please Enter the correct number choices in menu" << endl;
+        }
+
+    } while (selection != 0);
+}
+void Option2()
+{
+    int selection;
+    do
+    {
+        //Option 2 
+        cout << "Option 2 Menu" << endl;
+        cout << "1: Option1" << endl;
+        cout << "2: Option2" << endl;
+        cout << "3: Option3" << endl;
+        cout << "10: clear screen" << endl;
+        cout << "0: Return to main menu" << endl;
+        cout << "Enter selection:" << endl;
+        cin >> selection;
+        if (selection == 1)
+        {
+            cout << "You have Entered Option 1" << endl;
+            system("pause");
+        }
+        else if (selection == 2)
+        {
+            cout << "You have Entered Option 2" << endl;
+            system("pause");
+        }
+        else if (selection == 3)
+        {
+            cout << "You have Entered Option 3" << endl;
+            system("pause");
+        }
+        else if (selection == 10)
+        {
+            system("CLS");
+        }
+        else
+        {
+
+            cout << "Please Enter the correct number choices in menu" << endl;
+        }
+
+    } while (selection != 0);
+}
+void Option3()
+{
+    int selection;
+    do
+    {
+        //Option 3 
+        cout << "Option 3 Menu" << endl;
+        cout << "1: Option1" << endl;
+        cout << "2: Option2" << endl;
+        cout << "3: Option3" << endl;
+        cout << "10: clear screen" << endl;
+        cout << "0: Return to main menu" << endl;
+        cout << "Enter selection:" << endl;
+        cin >> selection;
+        if (selection == 1)
+        {
+            cout << "You have Entered Option 1" << endl;
+            system("pause");
+        }
+        else if (selection == 2)
+        {
+            cout << "You have Entered Option 2" << endl;
+            system("pause");
+        }
+        else if (selection == 3)
+        {
+            cout << "You have Entered Option 3" << endl;
+            system("pause");
+        }
+        else if (selection == 10)
+        {
+            system("CLS");
+        }
+        else
+        {
+
+            cout << "Please Enter the correct number choices in menu" << endl;
+        }
+
+    } while (selection != 0);
+}
+//Main Menu
+void MainMenu()
+{
+    int selection;
+    do
+    {
+        //Main menu options
+        cout << "Main Menu" << endl;
+        cout << "1: Option1" << endl;
+        cout << "2: Option2" << endl;
+        cout << "3: Option3" << endl;
+        cout << "10: clear screen" << endl;
+        cout << "0: End Program" << endl;
+        cout << "Enter selection:" << endl;
+        cin >> selection;
+        if (selection == 1)
+        {
+            Option1();
+        }
+        else if (selection == 2)
+        {
+            Option2();
+        }
+        else if (selection == 3)
+        {
+            Option3();
+        }
+        else if (selection == 10)
+        {
+            system("CLS");
+        }
+        else if (selection == 0)
+        {
+            cout << "END OF PROGRAM THANK YOU FOR USING IT!" << endl;
+        }
+        else
+        {
+            cout << "Please Enter the correct number choices in menu" << endl;
+        }
+
+    } while (selection != 0);
+    
+}
+void Login()
+{
+    //log in menu
+    int password = 1111;
+    int username = 1111;
+    int pass = 0;
+    int user = 0;
+    int attempt = 0;
+    while (true) {
+        cout << "Welcome To Stock TradingSystem." << endl;
+        cout << "Please enter your username and password." << endl;
+        cout << "For demonstration purposes the password and username is (1111)" << endl;
+        cout << "Username:" << endl;
+        cin >> user;
+        cout << "Enter Your Password: " << endl;
+        cin >> pass;
+        if (pass == password && user == username) {
+            cout << "You have successfully logged in" << endl;
+            loggedin = 1;
+            break;
+        }
+        else
+        {
+            cout << "You entered the wrong user name and/or password" << endl;
+        }
+        attempt = attempt + 1;
+        cout << "You have three attempts this is attempt: #" << attempt << endl;
+        if (attempt == 3) {
+            cout << "You have failed to log in, System Shutdown!" << endl;
+            loggedin = 0;
+            break;
+        }
+    }
+}
+int main()
+{
+    //login menu
+    Login();
+
+    //main menu
+    if (loggedin == 1)
+    {
+        system("CLS");
+        //call the menu
+        MainMenu();
+    }
+    //unsuccessful attempt 
+    else
+    {
+        system("CLS");
+        cout << "You have entered the wrong information too many times" << endl;
+        cout << "Have a nice day!" << endl;
+    }
+    return 0;
+}
