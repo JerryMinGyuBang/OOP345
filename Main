@@ -2,11 +2,16 @@
 //
 
 #include <iostream>
+#include <vector>
+
+//including classes
+#include "StockTrade.h"
 
 using namespace std;
 
 //global variable
 int loggedin = 0;
+vector<StockTrade> vect;
 
 //option 1
 void Option1()
@@ -57,7 +62,7 @@ void Option2()
     {
         //Option 2 
         cout << "Option 2 Menu" << endl;
-        cout << "1: Option1" << endl;
+        cout << "1: StockBroker Information" << endl;
         cout << "2: Option2" << endl;
         cout << "3: Option3" << endl;
         cout << "10: clear screen" << endl;
@@ -67,6 +72,14 @@ void Option2()
         if (selection == 1)
         {
             cout << "You have Entered Option 1" << endl;
+            int n = 0;
+            string temp1 = "";
+            cout << "Please select id of the StockBroker to display reporting" << endl;
+            cin >> n;
+            temp1 = vect[n - 1].getName();
+            if (temp1 != "Null") {
+                vect[n - 1].showInfo();
+            }
             system("pause");
         }
         else if (selection == 2)
@@ -141,7 +154,7 @@ void MainMenu()
         //Main menu options
         cout << "Main Menu" << endl;
         cout << "1: Option1" << endl;
-        cout << "2: Option2" << endl;
+        cout << "2: Information" << endl;
         cout << "3: Option3" << endl;
         cout << "10: clear screen" << endl;
         cout << "0: End Program" << endl;
@@ -211,6 +224,12 @@ void Login()
 }
 int main()
 {
+    //pre load members
+    vect.push_back(StockTrade("user1", 1, 25, 10000, 7500));
+    vect.push_back(StockTrade("user2", 2, 20, 5000, 7500));
+    vect.push_back(StockTrade("user3", 3, 20, 15000, 7500));
+    
+    
     //login menu
     Login();
 
@@ -230,3 +249,5 @@ int main()
     }
     return 0;
 }
+
+
