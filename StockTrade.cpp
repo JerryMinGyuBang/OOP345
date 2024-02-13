@@ -12,16 +12,18 @@ StockTrade::StockTrade()
     setAge(0);
     setbuying(100);
     setselling(100);
+    setBalance(1000);
 }
 
 // Overloaded Constructor
-StockTrade::StockTrade(string Name, int id, int age, double nl, double hl)
+StockTrade::StockTrade(string Name, int id, int age, double nl, double hl, double b)
 {
     setName(Name);
     setId(id);
     setAge(age);
     setbuying(nl);
     setselling(hl);
+    setBalance(b);
 }
 
 //SETTERS
@@ -44,6 +46,10 @@ void StockTrade::setbuying(double hs)
 void StockTrade::setselling(double nl)
 {
     selling = nl;
+}
+void StockTrade::setBalance(double b)
+{
+    balance = b;
 }
 
 
@@ -68,6 +74,11 @@ double StockTrade::getselling() const
 {
     return selling;
 }
+double StockTrade::getBalance() const
+{
+    return balance;
+}
+
 
 //show info
 void StockTrade::showInfo() const
@@ -77,5 +88,6 @@ void StockTrade::showInfo() const
     cout << "Purchaser Age: " << getAge() << endl;
     cout << "Purchaser buying power: " << getbuying() << endl;
     cout << "Purchaser selling power: " << getselling() << endl;
+    cout << "Balance is: $" << getBalance() << endl;
     cout << endl;
 }
