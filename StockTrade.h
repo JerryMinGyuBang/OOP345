@@ -12,10 +12,11 @@ private:
     int age;
     double buying;
     double selling;
+    double balance;
 
 public:
     StockTrade();
-    StockTrade(string, int, int, double,double);
+    StockTrade(string, int, int, double,double, double);
 
     // SETTERS
     void setName(string);
@@ -23,6 +24,7 @@ public:
     void setAge(int);
     void setbuying(double);
     void setselling(double);
+    void setBalance(double);
     
 
     // GETTERS
@@ -31,6 +33,7 @@ public:
     int getAge() const;
     double getbuying() const;
     double getselling() const;
+    double getBalance() const;
 
 
     // EXTRA
