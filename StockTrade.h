@@ -10,30 +10,27 @@ private:
     string Name;
     int id;
     int age;
-    double buying;
-    double selling;
     double balance;
+    double quantity;
 
 public:
     StockTrade();
-    StockTrade(string, int, int, double,double, double);
+    StockTrade(string, int, int, double, double);
 
     // SETTERS
     void setName(string);
     void setId(int);
     void setAge(int);
-    void setbuying(double);
-    void setselling(double);
     void setBalance(double);
+    void setQuantity(double);
     
 
     // GETTERS
     string getName() const;
     int getId() const;
     int getAge() const;
-    double getbuying() const;
-    double getselling() const;
     double getBalance() const;
+    double getQuantity() const;
 
 
     // EXTRA
