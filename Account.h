@@ -13,6 +13,9 @@ public:
 	double sold = 0;
 	double 	feecharge = 0;
 	double buys = 0;
+	double stockquantity = 0;
+	double stockquantityfinal = 100;
+	double stockprice = 50;
 public:
 	Account()
 	{
@@ -35,23 +38,7 @@ public:
 			cout << "Error Message, Balance less than 0" << endl;
 		}
 	}
-	virtual double SoldFee(double m)
-	{
-		sold = m;
-		balance = sold - Purchasefee;
-		return balance;
-	}
-	virtual double buy(double c)
-	{
-		buys = c;
-		balance = buys - feecharge;
-		return balance;
-	}
-	virtual double getfee()
-	{
-		return Purchasefee;
-	}
-	double getBalance()
+	virtual double getBalance()
 	{
 		return balance;
 	}
@@ -73,12 +60,28 @@ public:
 	double SoldFee(double m)
 	{
 		sold = m;
-		balance = sold + Purchasefee;
-		return balance;
+		stockquantity =  sold / stockprice ;
+		if (stockquantityfinal > stockquantity) {
+			balance -= sold - Purchasefee;
+			stockquantityfinal -= stockquantity;
+		}		
+		return stockquantity;
+	}
+	void setQuantity(double q)
+	{
+		stockquantityfinal = q;
+	}
+	double getQuantity()
+	{
+		return stockquantityfinal;
 	}
 	double getfee()
 	{
 		return Purchasefee;
+	}
+	double getBalance()
+	{
+		return balance;
 	}
 	~Sell()
 	{
@@ -96,15 +99,29 @@ public:
 		buys = 0;
 
 	}
+	void setQuantity(double q)
+	{
+		stockquantityfinal = q;
+	}
+	double getQuantity()
+	{
+		return stockquantityfinal;
+	}
 	double buy(double c)
 	{
-		buys = c;
-		balance = buys - feecharge;
-		return balance;
+		double buy = c;
+		stockquantity = buy / stockprice;
+		balance = balance - buy - Purchasefee;
+		stockquantityfinal += stockquantity;
+		return stockquantity;
 	}
 	double getfee()
 	{
 		return feecharge;
+	}
+	double getBalance()
+	{
+		return balance;
 	}
 	~Purchase()
 	{
