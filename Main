@@ -13,12 +13,15 @@ using namespace std;
 //global variable
 int loggedin = 0;
 vector<StockTrade> vect;
-vector<Account*> vect1;
+
 //option 1
 void Option1()
 {
    
     int selection;
+    Account accounts;
+    Sell sell;
+    Purchase buy;
     do
     {
         //Option 1 
@@ -38,13 +41,25 @@ void Option1()
             cout << "Please select id of the StockBroker to purchase" << endl;
             cin >> n;
             double temp = vect[n - 1].getBalance();
+            double temp6 = vect[n - 1].getQuantity();
             cout << "Please enter how much you want to purchase" << endl;
             cin >> m;
-            double temp1 = vect1[0]->SoldFee(m);
-            double result = temp - temp1;
-            vect[n - 1].setBalance(result);
-            cout << "New Balance: $" << vect[n - 1].getBalance() << endl;
-            cout << "Fee Charge of: $" << vect1[0]->getfee() << endl;
+            buy.setQuantity(temp6);
+            double temp4 = buy.buy(m);
+            double temp5 = buy.getQuantity();
+            double temp1 = buy.getBalance();
+            
+            if (temp > temp1) {
+                double result = temp + temp1;
+                vect[n - 1].setBalance(result);
+                cout << "New Balance: $" << vect[n - 1].getBalance() << endl;
+                cout << "Fee Charge of: $" << buy.getfee() << endl;
+                cout << "Stock Quantity is now: " << buy.getQuantity() << endl;
+                vect[n - 1].setQuantity(buy.getQuantity());
+            }
+            else {
+                cout << "insufficent fund" << endl;
+            }
             system("pause");
         }
         else if (selection == 2)
@@ -55,21 +70,26 @@ void Option1()
             cout << "Please select id of the StockBroker to Sell" << endl;
             cin >> n;
             double temp = vect[n - 1].getBalance();
+            double temp6 = vect[n - 1].getQuantity();
             cout << "Please enter how much you want to Sell" << endl;
             cin >> m;
-            double temp1 = vect1[1]->buy(m);
-            double temp3 = temp + temp1;
-            if (temp3 >= 0) {
-                double result = temp + temp1;
-                vect[n - 1].setBalance(result);
-                cout << "New Balance: $" << vect[n - 1].getBalance() << endl;
-                cout << "Fee Charge of: $" << vect1[1]->getfee() << endl;
+            sell.setQuantity(temp6);
+            double temp4 = sell.SoldFee(m);
+            double temp5 = sell.getQuantity();
+            double temp1 = sell.getBalance();
+            if (temp5 > 0) {
+                if (temp5 > temp4){
+                    double result = temp - temp1;
+                    vect[n - 1].setBalance(result);
+                    cout << "New Balance: $" << vect[n - 1].getBalance() << endl;
+                    cout << "Fee Charge of: $" << sell.getfee() << endl;
+                    cout << "Stock Quantity is now " << sell.getQuantity() << endl;
+                    vect[n - 1].setQuantity(sell.getQuantity());
+                }
             }
             else {
-                cout << "Debit amount exceeded account balance credit feecharge" << endl;
+                cout << "not enough stocks available" << endl;
             }
-
-            
             system("pause");
         }
         else if (selection == 3)
@@ -90,8 +110,12 @@ void Option1()
 
             cout << "Please Enter the correct number choices in menu" << endl;
         }
+         
 
     } while (selection != 0);
+    sell.~Sell();
+    buy.~Purchase();
+    accounts.~Account();
 }
 void Option2()
 {
@@ -263,12 +287,10 @@ void Login()
 int main()
 {
     //pre load members
-    vect.push_back(StockTrade("user1", 1, 25, 10000, 7500, 10000));
-    vect.push_back(StockTrade("user2", 2, 20, 5000, 7500, 10000));
-    vect.push_back(StockTrade("user3", 3, 20, 15000, 7500, 10000));
+    vect.push_back(StockTrade("user1", 1, 25, 10000 , 100));
+    vect.push_back(StockTrade("user2", 2, 20, 10000, 100));
+    vect.push_back(StockTrade("user3", 3, 20, 10000,100));
     
-    vect1.push_back(new Sell());
-    vect1.push_back(new Purchase());
     //login menu
     Login();
 
