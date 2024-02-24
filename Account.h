@@ -3,6 +3,7 @@
 //
 #include<iostream>
 #include "StockTrade.h"
+
 using namespace std;
 
 class Account {
@@ -38,6 +39,10 @@ public:
 			cout << "Error Message, Balance less than 0" << endl;
 		}
 	}
+	virtual void setprice(double p)
+	{
+		stockprice = p;
+	}
 	virtual double getBalance()
 	{
 		return balance;
@@ -70,6 +75,10 @@ public:
 	void setQuantity(double q)
 	{
 		stockquantityfinal = q;
+	}
+	void setprice(double p)
+	{
+		stockprice = p;
 	}
 	double getQuantity()
 	{
@@ -106,6 +115,10 @@ public:
 	double getQuantity()
 	{
 		return stockquantityfinal;
+	}
+	void setprice(double p)
+	{
+		stockprice = p;
 	}
 	double buy(double c)
 	{
