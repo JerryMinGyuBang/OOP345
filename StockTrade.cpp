@@ -7,76 +7,63 @@ using namespace std;
 
 StockTrade::StockTrade()
 {
-    setName("Default");
-    setId(0);
-    setAge(0);
-    setBalance(1000);
-    setQuantity(100);
+    setStockTrade("Default");
+    setTradeID(0);
+    setStockSymbol("Default");
+    setStockPrice(100);
 }
 
 // Overloaded Constructor
-StockTrade::StockTrade(string Name, int id, int age, double b, double q)
+StockTrade::StockTrade(string Name, int id, string symbol, double price)
 {
-    setName(Name);
-    setId(id);
-    setAge(age);
-    setBalance(b);
-    setQuantity(q);
+    setStockTrade(Name);
+    setTradeID(id);
+    setStockSymbol(symbol);
+    setStockPrice(price);
 }
 
 //SETTERS
-void StockTrade::setName(string Names)
+void StockTrade::setStockTrade(string Names)
 {
     Name = Names;
 }
-void StockTrade::setId(int ids)
+void StockTrade::setTradeID(int ids)
 {
     id = ids;
 }
-void StockTrade::setAge(int ages)
+void StockTrade::setStockSymbol(string symbols)
 {
-    age = ages;
+    symbol = symbols;
 }
-void StockTrade::setBalance(double b)
+void StockTrade::setStockPrice(double prices)
 {
-    balance = b;
+    price = prices;
 }
-void StockTrade::setQuantity(double q)
-{
-    quantity = q;
-}
-
 
 //GETTERS
-string StockTrade::getName() const
+string StockTrade::getStockTrade() const
 {
     return Name;
 }
-int StockTrade::getId() const
+int StockTrade::getTradeID() const
 {
     return id;
 }
-int StockTrade::getAge() const
+string StockTrade::getStockSymbol() const
 {
-    return age;
+    return symbol;
 }
-double StockTrade::getBalance() const
+double StockTrade::getStockPrice() const
 {
-    return balance;
+    return price;
 }
-double StockTrade::getQuantity() const
-{
-    return quantity;
-}
-
 
 //show info
 void StockTrade::showInfo() const
 {
-    cout << "Purchaser Name: " << getName() << endl;
-    cout << "Purchaser Id: " << getId() << endl;
-    cout << "Purchaser Age: " << getAge() << endl;
-    cout << "Balance Is: $" << getBalance() << endl;
-    cout << "Number Of Stocks: " << getQuantity() << endl;
+    cout << "Stock Trade is: " << getStockTrade() << endl;
+    cout << "Trade ID: " << getTradeID() << endl;
+    cout << "StockSymbol: " << getStockSymbol() << endl;
+    cout << "StockSymbol Price is: " << getStockPrice() << endl;
     cout << endl;
 }
