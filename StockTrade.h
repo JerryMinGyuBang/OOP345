@@ -9,29 +9,25 @@ class StockTrade
 private:
     string Name;
     int id;
-    int age;
-    double balance;
-    double quantity;
+    string symbol;
+    double price;
 
 public:
     StockTrade();
-    StockTrade(string, int, int, double, double);
+    StockTrade(string, int, string, double);
 
     // SETTERS
-    void setName(string);
-    void setId(int);
-    void setAge(int);
-    void setBalance(double);
-    void setQuantity(double);
+    void setStockTrade(string);
+    void setTradeID(int);
+    void setStockSymbol(string);
+    void setStockPrice(double);
     
 
     // GETTERS
-    string getName() const;
-    int getId() const;
-    int getAge() const;
-    double getBalance() const;
-    double getQuantity() const;
-
+    string getStockTrade() const;
+    int getTradeID() const;
+    string getStockSymbol() const;
+    double getStockPrice() const;
 
     // EXTRA
     void showInfo() const;
