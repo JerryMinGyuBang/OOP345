@@ -20,4 +20,10 @@ Previous edit of ReadMe: 2024-Feb-10
 
 
 
+--------------------------------------------------------
 
+
+
+Logs:
+
+- 2024-Feb-28: added declaration and empty implementation for: `UserInterface`, `Account`, `Member`, `StockExchange` classes
