@@ -1,3 +1,11 @@
+/* ----------------------------------------------------------------------------
+ *
+ * Author: M. Tang
+ * Maintainer: M. Tang
+ * Creation Date: 2024-Feb-27
+ * Previous Edit: 2024-Feb-28
+ * -------------------------------------------------------------------------- */
+
 #include "Account.h"
 
 //// Constructors and copy-control members
@@ -7,7 +15,7 @@ Account::Account() {
 }
 
 // parameterized constructor
-Account::Account(string id, string un, string pwd) {
+Account::Account(string un, string pwd) {
 
 }
 

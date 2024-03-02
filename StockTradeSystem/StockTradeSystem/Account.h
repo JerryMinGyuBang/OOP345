@@ -1,3 +1,11 @@
+/* ----------------------------------------------------------------------------
+ *
+ * Author: M. Tang
+ * Maintainer: M. Tang
+ * Creation Date: 2024-Feb-27
+ * Previous Edit: 2024-Feb-28
+ * -------------------------------------------------------------------------- */
+
 #pragma once
 #ifndef ACCOUNT_H
 #define ACCOUNT_H
@@ -13,7 +21,7 @@ public:
 	// default constructor
 	Account();
 	// parameterized constructor
-	Account(string, string, string);
+	Account(string, string);
 	// copy constructor
 	Account(const Account &);
 	// copy-assignment operator
@@ -23,8 +31,9 @@ public:
 
 private:
 	//// Data members
-	string user_id;
+	// user name
 	string user_name;
+	// user account password
 	string password;
 
 }; // end of class `Account`

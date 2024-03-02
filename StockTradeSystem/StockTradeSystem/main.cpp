@@ -1,3 +1,11 @@
+/* ----------------------------------------------------------------------------
+ *
+ * Author: M. Tang
+ * Maintainer: M. Tang
+ * Creation Date: 2024-Feb-27
+ * Previous Edit: 2024-Feb-28
+ * -------------------------------------------------------------------------- */
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -13,6 +21,8 @@
 
 
 int main(int argc, char **argv) {
+	UserInterface ui;
+	ui.spin();
 
 	return 0;
 }

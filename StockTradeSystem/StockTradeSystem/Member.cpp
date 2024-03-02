@@ -1,3 +1,11 @@
+/* ----------------------------------------------------------------------------
+ *
+ * Author: M. Tang
+ * Maintainer: M. Tang
+ * Creation Date: 2024-Feb-27
+ * Previous Edit: 2024-Feb-28
+ * -------------------------------------------------------------------------- */
+
 #include "Member.h"
 
 //// Constructors and copy-control members
@@ -7,6 +15,10 @@ Member::Member() {
 }
 
 // parameterized constructor
+Member::Member(string name, string pwd, double fund) {
+
+}
+
 // copy constructor
 Member::Member(const Member &rhs) {
 
