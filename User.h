@@ -2,12 +2,10 @@
 #include <iostream>
 #include <string>
 
-using namespace std;
-
 class User
 {
 private:
-    string Name;
+    std::string Name;
     int id;
     int age;
     double balance;
@@ -15,10 +13,10 @@ private:
 
 public:
     User();
-    User(string, int, int, double, double);
+    User(std::string, int, int, double, double);
 
     // SETTERS
-    void setName(string);
+    void setName(std::string);
     void setId(int);
     void setAge(int);
     void setBalance(double);
@@ -26,7 +24,7 @@ public:
 
 
     // GETTERS
-    string getName() const;
+    std::string getName() const;
     int getId() const;
     int getAge() const;
     double getBalance() const;
