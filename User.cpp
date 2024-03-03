@@ -1,7 +1,7 @@
 #include "User.h"
 #include <iostream>
 #include <string>
-using namespace std;
+
 // Default Constructor
 User::User()
 {
@@ -13,7 +13,7 @@ User::User()
 }
 
 // Overloaded Constructor
-User::User(string Name, int id, int age, double b, double q)
+User::User(std::string Name, int id, int age, double b, double q)
 {
     setName(Name);
     setId(id);
@@ -23,7 +23,7 @@ User::User(string Name, int id, int age, double b, double q)
 }
 
 //SETTERS
-void User::setName(string Names)
+void User::setName(std::string Names)
 {
     Name = Names;
 }
@@ -46,7 +46,7 @@ void User::setQuantity(double q)
 
 
 //GETTERS
-string User::getName() const
+std::string User::getName() const
 {
     return Name;
 }
@@ -71,10 +71,10 @@ double User::getQuantity() const
 //show info
 void User::showInfo() const
 {
-    cout << "Purchaser Name: " << getName() << endl;
-    cout << "Purchaser Id: " << getId() << endl;
-    cout << "Purchaser Age: " << getAge() << endl;
-    cout << "Balance Is: $" << getBalance() << endl;
-    cout << "Number Of Stocks: " << getQuantity() << endl;
-    cout << endl;
+    std::cout << "Purchaser Name: " << getName() << std::endl;
+    std::cout << "Purchaser Id: " << getId() << std::endl;
+    std::cout << "Purchaser Age: " << getAge() << std::endl;
+    std::cout << "Balance Is: $" << getBalance() << std::endl;
+    std::cout << "Number Of Stocks: " << getQuantity() << std::endl;
+    std::cout << std::endl;
 }
