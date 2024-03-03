@@ -9,20 +9,28 @@
 #include "StockTrade.h"
 #include "Account.h"
 #include "User.h"
-
-using namespace std;
+#include "TradeRecord.h"
 
 //global variable
 int loggedin = 0;
 int globalid = 4;
 int stockglobalid = 8;
-vector<StockTrade> vect;
-vector<User> vectuser;
+std::vector<StockTrade> vect;
+std::vector<User> vectuser;
+TradeRecord tradeRecord;
 
 //option 1
 void Option1()
 {
-   
+    int n = 0;
+    double m = 0;
+    int h = 0;
+    double temp = 0;
+    double temp6 = 0;
+    double temp4 = 0;
+    double temp5 = 0;
+    double temp1 = 0;
+    double temp7 = 0;
     int selection;
     Account accounts;
     Sell sell;
@@ -30,87 +38,105 @@ void Option1()
     do
     {
         //Option 1 
-        cout << "Option 1 Menu" << endl;
-        cout << "1: Buy" << endl;
-        cout << "2: Sell" << endl;
-        cout << "3: Display" << endl;
-        cout << "10: clear screen" << endl;
-        cout << "0: Return to main menu" << endl;
-        cout << "Enter selection:" << endl;
-        cin >> selection;
+        std::cout << "Option 1 Menu" << std::endl;
+        std::cout << "1: Buy" << std::endl;
+        std::cout << "2: Sell" << std::endl;
+        std::cout << "3: Display" << std::endl;
+        std::cout << "10: clear screen" << std::endl;
+        std::cout << "0: Return to main menu" << std::endl;
+        std::cout << "Enter selection:" << std::endl;
+        std::cin >> selection;
         if (selection == 1)
         {
-            cout << "You have Entered Option 1" << endl;
-            double n = 0;
-            double m = 0;
-            double h = 0;
-            cout << "Please select id of the StockBroker to purchase" << endl;
-            cin >> n;
-            double temp = vectuser[n - 1].getBalance();
-            double temp6 = vectuser[n - 1].getQuantity();
-            cout << "Please select id of the Stock Option you would like to purchase" << endl;
-            cin >> h;
-            double temp7 = vect[h - 1].getStockPrice();
-            cout << "Please enter how much you want to purchase" << endl;
-            cin >> m;
+            std::cout << "You have Entered Option 1" << std::endl;
+            std::cout << "Please select id of the StockBroker to purchase" << std::endl;
+            std::cin >> n;
+            temp = vectuser[n - 1].getBalance();
+
+            temp6 = vectuser[n - 1].getQuantity();
+
+            buy.setBalance(temp);
+            std::cout << "Please select id of the Stock Option you would like to purchase" << std::endl;
+            std::cin >> h;
+            temp7 = vect[h - 1].getStockPrice();
+            std::cout << "Please enter how much you want to purchase" << std::endl;
+            std::cin >> m;
             buy.setQuantity(temp6);
             buy.setprice(temp7);
-            double temp4 = buy.buy(m);
-            double temp5 = buy.getQuantity();
-            double temp1 = buy.getBalance();
 
-            
+            temp4 = buy.buy(m);
+            temp5 = buy.getQuantity();
+            temp1 = buy.getBalance();
+
             if (temp > temp1) {
-                double result = temp + temp1;
+                double result = temp - m - temp6;
                 vectuser[n - 1].setBalance(result);
-                cout << "New Balance: $" << vectuser[n - 1].getBalance() << endl;
-                cout << "Fee Charge of: $" << buy.getfee() << endl;
-                cout << "New Stock Quantity is now: " << buy.getQuantity() << endl;
-                cout << "You Bought at Stock Price: $" << temp7 << endl;
+                std::cout << "New Balance: $" << vectuser[n - 1].getBalance() << std::endl;
+                std::cout << "Fee Charge of: $" << buy.getfee() << std::endl;
+                std::cout << "New Stock Quantity is now: " << buy.getQuantity() << std::endl;
+                std::cout << "You Bought at Stock Price: $" << temp7 << std::endl;
                 vectuser[n - 1].setQuantity(buy.getQuantity());
+
+
+                int stockId = h - 1;
+                std::string stockSymbol = vect[stockId].getStockSymbol();
+                std::string stockTradeName = vect[stockId].getStockTrade();
+                double price = vect[stockId].getStockPrice();
+
+                // After a successful buy operation
+                tradeRecord.addTrade(stockSymbol, stockId, stockTradeName, price, "Purchase", n);
             }
             else {
-                cout << "insufficent fund" << endl;
+                std::cout << "insufficent fund" << std::endl;
             }
             system("pause");
         }
         else if (selection == 2)
         {
-            cout << "You have Entered Option 1" << endl;
-            double n = 0;
-            double m = 0;
-            cout << "Please select id of the StockBroker to Sell" << endl;
-            cin >> n;
-            double temp = vectuser[n - 1].getBalance();
-            double temp6 = vectuser[n - 1].getQuantity();
-            cout << "Please enter how much you want to Sell" << endl;
-            cin >> m;
+            std::cout << "You have Entered Option 2" << std::endl;
+            std::cout << "Please select id of the StockBroker to Sell" << std::endl;
+            std::cin >> n;
+            temp = vectuser[n - 1].getBalance();
+            sell.setBalance(temp);
+            temp6 = vectuser[n - 1].getQuantity();
+            std::cout << "Please select id of the Stock Option you would like to sell" << std::endl;
+            std::cin >> h;
+            std::cout << "Please enter how much you want to Sell" << std::endl;
+            std::cin >> m;
+            temp7 = vect[h - 1].getStockPrice();
             sell.setQuantity(temp6);
-            double temp4 = sell.SoldFee(m);
-            double temp5 = sell.getQuantity();
-            double temp1 = sell.getBalance();
-            if (temp5 > 0) {
-                if (temp5 > temp4){
-                    double result = temp - temp1;
-                    vectuser[n - 1].setBalance(result);
-                    cout << "New Balance: $" << vectuser[n - 1].getBalance() << endl;
-                    cout << "Fee Charge of: $" << sell.getfee() << endl;
-                    cout << "Stock Quantity is now " << sell.getQuantity() << endl;
-                    vectuser[n - 1].setQuantity(sell.getQuantity());
-                }
+            sell.setprice(temp7);
+            temp4 = sell.SoldFee(m);
+            if (temp4 <= temp6) {
+
+                double result = temp + m - temp6;
+                vectuser[n - 1].setBalance(result);
+                std::cout << "New Balance: $" << vectuser[n - 1].getBalance() << std::endl;
+                std::cout << "Fee Charge of: $" << sell.getfee() << std::endl;
+                std::cout << "Stock Quantity is now " << sell.getQuantity() << std::endl;
+                std::cout << "You sold at Stock Price: $" << temp7 << std::endl;
+                vectuser[n - 1].setQuantity(sell.getQuantity());
+                int stockId = h - 1;
+                std::string stockSymbol = vect[stockId].getStockSymbol();
+                std::string stockTradeName = vect[stockId].getStockTrade();
+                double price = vect[stockId].getStockPrice();
+
+                // After a successful sell operation
+                tradeRecord.addTrade(stockSymbol, stockId, stockTradeName, price, "Sold", n);
+                system("pause");
+
             }
             else {
-                cout << "not enough stocks available" << endl;
+                std::cout << "not enough stocks available" << std::endl;
             }
-            system("pause");
+
         }
         else if (selection == 3)
         {
-            cout << "You have Entered Option 3" << endl;
-            int n = 0;
-            cout << "Please select id of the StockBroker to display Balance" << endl;
-            cin >> n;
-            cout << "Balance is: $" << vectuser[n - 1].getBalance();
+            std::cout << "You have Entered Option 3" << std::endl;
+            std::cout << "Please select id of the StockBroker to display Balance" << std::endl;
+            std::cin >> n;
+            std::cout << "Balance is: $" << vectuser[n - 1].getBalance() << std::endl;
             system("pause");
         }
         else if (selection == 10)
@@ -120,57 +146,59 @@ void Option1()
         else
         {
 
-            cout << "Please Enter the correct number choices in menu" << endl;
+            std::cout << "Please Enter the correct number choices in menu" << std::endl;
         }
-         
+
 
     } while (selection != 0);
     sell.~Sell();
     buy.~Purchase();
     accounts.~Account();
 }
+
+
 void Option2()
 {
     int selection;
     do
     {
         //Option 2 
-        cout << "Option 2 Menu" << endl;
-        cout << "1: Display StockBroker Information" << endl;
-        cout << "2: Add StockBroker Information" << endl;
-        cout << "3: Remove StockBroker Information" << endl;
-        cout << "10: clear screen" << endl;
-        cout << "0: Return to main menu" << endl;
-        cout << "Enter selection:" << endl;
-        cin >> selection;
+        std::cout << "Option 2 Menu" << std::endl;
+        std::cout << "1: Display StockBroker Information" << std::endl;
+        std::cout << "2: Add StockBroker Information" << std::endl;
+        std::cout << "3: Remove StockBroker Information" << std::endl;
+        std::cout << "10: clear screen" << std::endl;
+        std::cout << "0: Return to main menu" << std::endl;
+        std::cout << "Enter selection:" << std::endl;
+        std::cin >> selection;
         if (selection == 1)
         {
-            cout << "_____________________________________________" << endl;
+            std::cout << "_____________________________________________" << std::endl;
             for (int i = 1; i < vect.size() + 1; i++) {
-                string temp1 = vect[i - 1].getStockTrade();
+                std::string temp1 = vect[i - 1].getStockTrade();
                 if (temp1 != "Null") {
                     vect[i - 1].showInfo();
-                    cout << endl;
+                    std::cout << std::endl;
                 }
             }
-            cout << "All user information displayed" << endl;
+            std::cout << "All user information displayed" << std::endl;
             system("pause");
         }
         else if (selection == 2)
         {
-            string StockTradeName = "";
+            std::string StockTradeName = "";
             int id = stockglobalid;
-            string StockSymbol = "";
+            std::string StockSymbol = "";
             double price = 0;
-            cout << "Please enter the name of the stock" << endl;
-            cin >> StockTradeName;
-            cout << "Please enter the symbol of stock" << endl;
-            cin >> StockSymbol;
-            cout << "Please enter the stock price" << endl;
-            cin >> price;
+            std::cout << "Please enter the name of the stock" << std::endl;
+            std::cin >> StockTradeName;
+            std::cout << "Please enter the symbol of stock" << std::endl;
+            std::cin >> StockSymbol;
+            std::cout << "Please enter the stock price" << std::endl;
+            std::cin >> price;
             vect.push_back(StockTrade(StockSymbol, stockglobalid, StockTradeName, price));
-            cout << "You have succesfully added an stock" << endl;
-            cout << "The User ID is: " << stockglobalid << endl;
+            std::cout << "You have succesfully added an stock" << std::endl;
+            std::cout << "The User ID is: " << stockglobalid << std::endl;
             stockglobalid++;
             system("pause");
         }
@@ -178,19 +206,19 @@ void Option2()
         {
             int num = 0;
             int position = 0;
-            cout << "Please enter id number of the Stock Trade to remove from the list" << endl;
-            cin >> num;
+            std::cout << "Please enter id number of the Stock Trade to remove from the list" << std::endl;
+            std::cin >> num;
             position = (num - 1);
             if (num > 0)
             {
                 vect[num - 1].setStockTrade("Null");
                 vect[num - 1].setTradeID(0);
-                vect[num - 1].setStockSymbol ("Null");
-                cout << "You have successfully removed user from the list!" << endl;
+                vect[num - 1].setStockSymbol("Null");
+                std::cout << "You have successfully removed user from the list!" << std::endl;
             }
             else
             {
-                cout << "you enter wrong number please try agian";
+                std::cout << "you enter wrong number please try agian";
             }
             system("pause");
         }
@@ -201,43 +229,44 @@ void Option2()
         else
         {
 
-            cout << "Please Enter the correct number choices in menu" << endl;
+            std::cout << "Please Enter the correct number choices in menu" << std::endl;
         }
 
     } while (selection != 0);
 }
+
 void Option3()
 {
     int selection;
     do
     {
         //Option 3 
-        cout << "Option 3 Menu" << endl;
-        cout << "1: Add User" << endl;
-        cout << "2: Remove User" << endl;
-        cout << "3: Display All User" << endl;
-        cout << "10: clear screen" << endl;
-        cout << "0: Return to main menu" << endl;
-        cout << "Enter selection:" << endl;
-        cin >> selection;
+        std::cout << "Option 3 Menu" << std::endl;
+        std::cout << "1: Add User" << std::endl;
+        std::cout << "2: Remove User" << std::endl;
+        std::cout << "3: Display All User" << std::endl;
+        std::cout << "10: clear screen" << std::endl;
+        std::cout << "0: Return to main menu" << std::endl;
+        std::cout << "Enter selection:" << std::endl;
+        std::cin >> selection;
         if (selection == 1)
         {
-            string name = "";
+            std::string name = "";
             int id = globalid;
             int age = 0;
             double balance = 0;
             double stockquantity = 0;
-            cout << "Please enter the name of the user" << endl;
-            cin >> name;
-            cout << "Please enter the age" << endl;
-            cin >> age;
-            cout << "Please enter the balance of user" << endl;
-            cin >> balance;
-            cout << "Please enter the stockquantity" << endl;
-            cin >> stockquantity;
+            std::cout << "Please enter the name of the user" << std::endl;
+            std::cin >> name;
+            std::cout << "Please enter the age" << std::endl;
+            std::cin >> age;
+            std::cout << "Please enter the balance of user" << std::endl;
+            std::cin >> balance;
+            std::cout << "Please enter the stockquantity" << std::endl;
+            std::cin >> stockquantity;
             vectuser.push_back(User(name, globalid, age, balance, stockquantity));
-            cout << "You have succesfully added an user" << endl;
-            cout << "The User ID is: " << globalid << endl;
+            std::cout << "You have succesfully added an user" << std::endl;
+            std::cout << "The User ID is: " << globalid << std::endl;
             globalid++;
             system("pause");
         }
@@ -245,8 +274,8 @@ void Option3()
         {
             int num = 0;
             int position = 0;
-            cout << "Please enter id number of the User to remove from the list" << endl;
-            cin >> num;
+            std::cout << "Please enter id number of the User to remove from the list" << std::endl;
+            std::cin >> num;
             position = (num - 1);
             if (num > 0)
             {
@@ -255,26 +284,26 @@ void Option3()
                 vectuser[num - 1].setAge(0);
                 vectuser[num - 1].setBalance(0);
                 vectuser[num - 1].setQuantity(0);
-                cout << "You have successfully removed user from the list!" << endl;
+                std::cout << "You have successfully removed user from the list!" << std::endl;
             }
             else
             {
-                cout << "you enter wrong number please try agian";
+                std::cout << "you enter wrong number please try agian";
             }
-            
+
             system("pause");
         }
         else if (selection == 3)
         {
-            cout << "_____________________________________________" << endl;
+            std::cout << "_____________________________________________" << std::endl;
             for (int i = 1; i < vectuser.size() + 1; i++) {
-                string temp1 = vectuser[i - 1].getName();
+                std::string temp1 = vectuser[i - 1].getName();
                 if (temp1 != "Null") {
                     vectuser[i - 1].showInfo();
-                    cout << endl;
+                    std::cout << std::endl;
                 }
             }
-            cout << "All user information displayed" << endl;
+            std::cout << "All user information displayed" << std::endl;
             system("pause");
         }
         else if (selection == 10)
@@ -284,11 +313,52 @@ void Option3()
         else
         {
 
-            cout << "Please Enter the correct number choices in menu" << endl;
+            std::cout << "Please Enter the correct number choices in menu" << std::endl;
         }
 
     } while (selection != 0);
 }
+
+void Option4()
+{
+    int selection;
+    do
+    {
+        //Option 4
+        std::cout << "Option 4 Menu" << std::endl;
+        std::cout << "1: Display Trade Record" << std::endl;
+        std::cout << "2: Option 2" << std::endl;
+        std::cout << "3: Option 3" << std::endl;
+        std::cout << "10: clear screen" << std::endl;
+        std::cout << "0: Return to main menu" << std::endl;
+        std::cout << "Enter selection:" << std::endl;
+        std::cin >> selection;
+        if (selection == 1)
+        {
+            std::cout << "_____________________________________________" << std::endl;
+            tradeRecord.displayTrades();
+            system("pause");
+        }
+        else if (selection == 2)
+        {
+            system("pause");
+        }
+        else if (selection == 3)
+        {
+            system("pause");
+        }
+        else if (selection == 10)
+        {
+            system("CLS");
+        }
+        else
+        {
+            std::cout << "Please Enter the correct number choices in menu" << std::endl;
+        }
+
+    } while (selection != 0);
+}
+
 //Main Menu
 void MainMenu()
 {
@@ -296,14 +366,15 @@ void MainMenu()
     do
     {
         //Main menu options
-        cout << "Main Menu" << endl;
-        cout << "1: Stock Exchange" << endl;
-        cout << "2: Stock Information (including add/remove stock options)" << endl;
-        cout << "3: add/remove user" << endl;
-        cout << "10: clear screen" << endl;
-        cout << "0: End Program" << endl;
-        cout << "Enter selection:" << endl;
-        cin >> selection;
+        std::cout << "Main Menu" << std::endl;
+        std::cout << "1: Stock Exchange" << std::endl;
+        std::cout << "2: Stock Information (including add/remove stock options)" << std::endl;
+        std::cout << "3: add/remove user" << std::endl;
+        std::cout << "4: Display Trade Record History" << std::endl;
+        std::cout << "10: clear screen" << std::endl;
+        std::cout << "0: End Program" << std::endl;
+        std::cout << "Enter selection:" << std::endl;
+        std::cin >> selection;
         if (selection == 1)
         {
             Option1();
@@ -316,22 +387,27 @@ void MainMenu()
         {
             Option3();
         }
+        else if (selection == 4)
+        {
+            Option4();
+        }
         else if (selection == 10)
         {
             system("CLS");
         }
         else if (selection == 0)
         {
-            cout << "END OF PROGRAM THANK YOU FOR USING IT!" << endl;
+            std::cout << "END OF PROGRAM THANK YOU FOR USING IT!" << std::endl;
         }
         else
         {
-            cout << "Please Enter the correct number choices in menu" << endl;
+            std::cout << "Please Enter the correct number choices in menu" << std::endl;
         }
 
     } while (selection != 0);
-    
+
 }
+
 void Login()
 {
     //log in menu
@@ -341,26 +417,26 @@ void Login()
     int user = 0;
     int attempt = 0;
     while (true) {
-        cout << "Welcome To Stock TradingSystem." << endl;
-        cout << "Please enter your username and password." << endl;
-        cout << "For demonstration purposes the password and username is (1111)" << endl;
-        cout << "Username:" << endl;
-        cin >> user;
-        cout << "Enter Your Password: " << endl;
-        cin >> pass;
+        std::cout << "Welcome To Stock TradingSystem." << std::endl;
+        std::cout << "Please enter your username and password." << std::endl;
+        std::cout << "For demonstration purposes the password and username is (1111)" << std::endl;
+        std::cout << "Username:" << std::endl;
+        std::cin >> user;
+        std::cout << "Enter Your Password: " << std::endl;
+        std::cin >> pass;
         if (pass == password && user == username) {
-            cout << "You have successfully logged in" << endl;
+            std::cout << "You have successfully logged in" << std::endl;
             loggedin = 1;
             break;
         }
         else
         {
-            cout << "You entered the wrong user name and/or password" << endl;
+            std::cout << "You entered the wrong user name and/or password" << std::endl;
         }
         attempt = attempt + 1;
-        cout << "You have three attempts this is attempt: #" << attempt << endl;
+        std::cout << "You have three attempts this is attempt: #" << attempt << std::endl;
         if (attempt == 3) {
-            cout << "You have failed to log in, System Shutdown!" << endl;
+            std::cout << "You have failed to log in, System Shutdown!" << std::endl;
             loggedin = 0;
             break;
         }
@@ -369,9 +445,9 @@ void Login()
 int main()
 {
     //pre load members
-    vectuser.push_back(User("user1", 1, 25, 10000 , 100));
+    vectuser.push_back(User("user1", 1, 25, 10000, 100));
     vectuser.push_back(User("user2", 2, 20, 10000, 100));
-    vectuser.push_back(User("user3", 3, 20, 10000,100));
+    vectuser.push_back(User("user3", 3, 20, 10000, 100));
 
 
     vect.push_back(StockTrade("Agilent Technologies", 1, "A", 10));
@@ -381,7 +457,7 @@ int main()
     vect.push_back(StockTrade("Google", 5, "GOOG", 20));
     vect.push_back(StockTrade("Intel", 6, "INTC", 10));
     vect.push_back(StockTrade("Microsoft", 7, "MSFT", 30));
-    
+
     //login menu
     Login();
 
@@ -396,10 +472,8 @@ int main()
     else
     {
         system("CLS");
-        cout << "You have entered the wrong information too many times" << endl;
-        cout << "Have a nice day!" << endl;
+        std::cout << "You have entered the wrong information too many times" << std::endl;
+        std::cout << "Have a nice day!" << std::endl;
     }
     return 0;
 }
-
-
