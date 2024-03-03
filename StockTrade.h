@@ -1,32 +1,33 @@
 #pragma once
 #include <iostream>
 #include <string>
-
-using namespace std;
+#include "Account.h"
+#include "User.h"
+#include "TradeRecord.h"
 
 class StockTrade
 {
 private:
-    string Name;
+    std::string Name;
     int id;
-    string symbol;
+    std::string symbol;
     double price;
 
 public:
     StockTrade();
-    StockTrade(string, int, string, double);
+    StockTrade(std::string, int, std::string, double);
 
     // SETTERS
-    void setStockTrade(string);
+    void setStockTrade(std::string);
     void setTradeID(int);
-    void setStockSymbol(string);
+    void setStockSymbol(std::string);
     void setStockPrice(double);
-    
+
 
     // GETTERS
-    string getStockTrade() const;
+    std::string getStockTrade() const;
     int getTradeID() const;
-    string getStockSymbol() const;
+    std::string getStockSymbol() const;
     double getStockPrice() const;
 
     // EXTRA
