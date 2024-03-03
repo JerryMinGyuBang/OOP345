@@ -1,18 +1,13 @@
 #pragma once
-// ConsoleApplication1.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
 #include<iostream>
 #include "StockTrade.h"
 
-using namespace std;
-
 class Account {
-	// Account class implementation
 public:
 	double balance = 0;
 	double Purchasefee = 0;
 	double sold = 0;
-	double 	feecharge = 0;
+	double feecharge = 0;
 	double buys = 0;
 	double stockquantity = 0;
 	double stockquantityfinal = 100;
@@ -36,7 +31,7 @@ public:
 			buys = 0;
 		}
 		else {
-			cout << "Error Message, Balance less than 0" << endl;
+			std::cout << "Error Message, Balance less than 0" << std::endl;
 		}
 	}
 	virtual void setprice(double p)
@@ -49,27 +44,25 @@ public:
 	}
 	~Account()
 	{
-		cout << "base destructor" << endl;
+		
 	}
 };
 
 class Sell : public Account {
-
 public:
 	Sell()
 	{
 		Purchasefee = 100;
 		sold = 0;
 	}
-	//sold plus fee
 	double SoldFee(double m)
 	{
 		sold = m;
-		stockquantity =  sold / stockprice ;
+		stockquantity = sold / stockprice;
 		if (stockquantityfinal > stockquantity) {
-			balance -= sold - Purchasefee;
+			balance = -balance - sold - Purchasefee;
 			stockquantityfinal -= stockquantity;
-		}		
+		}
 		return stockquantity;
 	}
 	void setQuantity(double q)
@@ -79,6 +72,10 @@ public:
 	void setprice(double p)
 	{
 		stockprice = p;
+	}
+	void setBalance(double b)
+	{
+		balance = b;
 	}
 	double getQuantity()
 	{
@@ -94,23 +91,24 @@ public:
 	}
 	~Sell()
 	{
-		cout << "saving acccount destructor" << endl;
+		
 	}
 };
 
 class Purchase : public Account {
 public:
-	
-public:
 	Purchase()
 	{
 		feecharge = 100;
 		buys = 0;
-
 	}
 	void setQuantity(double q)
 	{
 		stockquantityfinal = q;
+	}
+	void setBalance(double b)
+	{
+		balance = b;
 	}
 	double getQuantity()
 	{
@@ -124,7 +122,7 @@ public:
 	{
 		double buy = c;
 		stockquantity = buy / stockprice;
-		balance = balance - buy - Purchasefee;
+		balance = buy - Purchasefee;
 		stockquantityfinal += stockquantity;
 		return stockquantity;
 	}
@@ -138,8 +136,6 @@ public:
 	}
 	~Purchase()
 	{
-		cout << "Checking acccount destructor" << endl;
+		
 	}
-
 };
-
