@@ -84,7 +84,8 @@ void Option1()
                 double price = vect[stockId].getStockPrice();
 
                 // After a successful buy operation
-                tradeRecord.addTrade(stockSymbol, stockId, stockTradeName, price, "Purchase", n);
+                double profitLoss = 0;
+                tradeRecord.addTrade(stockSymbol, stockId, stockTradeName, price, "Purchase", n, profitLoss);
             }
             else {
                 std::cout << "insufficent fund" << std::endl;
@@ -109,9 +110,14 @@ void Option1()
             temp4 = sell.SoldFee(m);
             if (temp4 <= temp6) {
 
+                double buyPrice = vect[h - 1].getStockPrice();
+                double sellPrice = temp7;
+                int quantity = m;
+                double profitLoss = sell.calculateProfitLoss(buyPrice, sellPrice, quantity);
                 double result = temp + m - temp6;
                 vectuser[n - 1].setBalance(result);
                 std::cout << "New Balance: $" << vectuser[n - 1].getBalance() << std::endl;
+                std::cout << "Profit/Loss from this transaction: $" << profitLoss << std::endl;
                 std::cout << "Fee Charge of: $" << sell.getfee() << std::endl;
                 std::cout << "Stock Quantity is now " << sell.getQuantity() << std::endl;
                 std::cout << "You sold at Stock Price: $" << temp7 << std::endl;
@@ -122,7 +128,7 @@ void Option1()
                 double price = vect[stockId].getStockPrice();
 
                 // After a successful sell operation
-                tradeRecord.addTrade(stockSymbol, stockId, stockTradeName, price, "Sold", n);
+                tradeRecord.addTrade(stockSymbol, stockId, stockTradeName, price, "Sold", n, profitLoss);
                 system("pause");
 
             }
