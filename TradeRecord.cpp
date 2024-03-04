@@ -7,9 +7,9 @@
 #include "User.h"
 #include "TradeRecord.h"
 
-void TradeRecord::addTrade(const std::string& stockSymbol, int stockglobalid, const std::string& stockTradeName, double price, const std::string& status, int UserID)
+void TradeRecord::addTrade(const std::string& stockSymbol, int stockglobalid, const std::string& stockTradeName, double price, const std::string& status, int UserID, double profitLoss)
 {
-    trades.push_back(std::make_tuple(stockSymbol, stockglobalid, stockTradeName, price, status, UserID));
+    trades.push_back(std::make_tuple(stockSymbol, stockglobalid, stockTradeName, price, status, UserID, profitLoss));
 }
 
 int TradeRecord::getNumberOfTrades() const
@@ -36,6 +36,7 @@ void TradeRecord::displayTrades() const
         std::cout << "Price: " << std::get<3>(trades[i]) << std::endl;
         std::cout << "Status: " << std::get<4>(trades[i]) << std::endl;
         std::cout << "UserID: " << std::get<5>(trades[i]) << std::endl;
+        std::cout << "Profit/Loss: " << std::get<6>(trades[i]) << std::endl;
         std::cout << "-----------------" << std::endl;
     }
 }
