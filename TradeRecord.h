@@ -6,11 +6,11 @@
 
 class TradeRecord {
 private:
-    using Trade = std::tuple<std::string, int, std::string, double, std::string, int>; 
+    using Trade = std::tuple<std::string, int, std::string, double, std::string, int, double>;
     std::vector<Trade> trades;
 
 public:
-    void addTrade(const std::string& stockSymbol, int stockglobalid, const std::string& stockTradeName, double price, const std::string& status, int UserID);
+    void addTrade(const std::string& stockSymbol, int stockglobalid, const std::string& stockTradeName, double price, const std::string& status, int UserID, double profitLoss);
 
     // Function to get the number of trades
     int getNumberOfTrades() const;
