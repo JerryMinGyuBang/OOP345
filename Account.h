@@ -12,6 +12,9 @@ public:
 	double stockquantity = 0;
 	double stockquantityfinal = 100;
 	double stockprice = 50;
+	double buyPrice = 0;
+	double sellPrice = 0;
+	double quantity = 0;
 public:
 	Account()
 	{
@@ -44,7 +47,7 @@ public:
 	}
 	~Account()
 	{
-		
+
 	}
 };
 
@@ -89,9 +92,13 @@ public:
 	{
 		return balance;
 	}
+	double calculateProfitLoss(double buyPrice, double sellPrice, int quantity)
+	{
+		return (sellPrice - buyPrice) * quantity;
+	}
 	~Sell()
 	{
-		
+
 	}
 };
 
@@ -136,6 +143,6 @@ public:
 	}
 	~Purchase()
 	{
-		
+
 	}
 };
