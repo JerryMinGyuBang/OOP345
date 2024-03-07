@@ -64,6 +64,5 @@ void StockTrade::showInfo() const
     cout << "Stock Trade is: " << getStockTrade() << endl;
     cout << "Trade ID: " << getTradeID() << endl;
     cout << "StockSymbol: " << getStockSymbol() << endl;
-    cout << "StockSymbol Price is: " << getStockPrice() << endl;
-    cout << endl;
+    cout << "StockSymbol Price is: $" << getStockPrice() << endl;
 }
