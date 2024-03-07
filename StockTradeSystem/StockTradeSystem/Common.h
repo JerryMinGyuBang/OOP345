@@ -3,14 +3,16 @@
  * Author: M. Tang
  * Maintainer: M. Tang
  * Creation Date: 2024-Feb-27
- * Previous Edit: 2024-March-02
+ * Previous Edit: 2024-March-06
  * -------------------------------------------------------------------------- */
 
 #pragma once
 #ifndef COMMON_H
 #define COMMON_H
 
+#include <iostream>
 #include <string>
+#include <random>
 #include <chrono>
 #include <ctime>
 
@@ -32,6 +34,8 @@
 #define SERVICE_CHARGE	2
 // duration in seconds for every stock price update
 #define UPDATE_DURATION 10
+// update mechanism - 0: no change; 1 - standard normal
+#define UPDATE_RULE		1
 
 
 //// Define enumerations
@@ -66,5 +70,10 @@ ORDERSTATUS getOrderStatusFromInt(const size_t ci);
 //// Other utilities
 // obtain current time and returns a `std::time_t` object
 time_t getCurrentTime();
+// get a random number from the standard normal distribution
+double getStandardNormalRN();
+// a helper function to reset the screen - WINDOWS only
+void resetScreen();
+
 
 #endif /* COMMON_H */

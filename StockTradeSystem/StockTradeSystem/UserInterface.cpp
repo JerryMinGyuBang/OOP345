@@ -3,7 +3,7 @@
  * Author: M. Tang
  * Maintainer: M. Tang
  * Creation Date: 2024-Feb-27
- * Previous Edit: 2024-Feb-28
+ * Previous Edit: 2024-March-06
  * -------------------------------------------------------------------------- */
 
 #include "UserInterface.h"
@@ -11,6 +11,7 @@
 //// Constructors and copy-control members
 // default constructor
 UserInterface::UserInterface() {
+	this->exchange_ptr = std::make_shared<StockExchange>();
 	//cout << "UserInterface::UserInterface()" << endl; // [TODO]: remove this line
 }
 
@@ -79,13 +80,15 @@ void UserInterface::loginIn(string filename, size_t u_type) {
 			// compare user input to the records in file
 			if (f_name == uname && f_pwd == pwd) {
 				cout << "\nMember verfication succeeds!" << endl;
-				system("pause");
-				system("cls");
+				// call resetScreen utility
+				resetScreen();
 
 				// create a `Member` smart pointer using its parameterized constructor
-				user = std::make_shared<Member>(uname, pwd);
+				user = std::make_shared<Member>(uname, pwd, exchange_ptr);
+				// dynamic cast the base-type smart poitner to the derived-type ptr
+				shared_ptr<Member> m_ptr = std::dynamic_pointer_cast<Member>(user);
 				// enter sub-menu belongs to `Member`
-				// [TODO]: call member's submenu
+				this->runMemberUI(m_ptr); // [TODO]: call member user interface
 
 				// ending account member menu
 				ifs.close();	// closing data file
@@ -107,8 +110,8 @@ void UserInterface::loginIn(string filename, size_t u_type) {
 			// compare user input to the records in file
 			if (f_name == uname && f_pwd == pwd) {
 				cout << "\nAdmin verfication succeeds!" << endl;
-				system("pause");
-				system("cls");
+				// call resetScreen utility
+				resetScreen();
 
 				// create a `Member` smart pointer using its parameterized constructor
 				//user = std::make_shared<Member>(uname, pwd, 0.0);
@@ -125,8 +128,8 @@ void UserInterface::loginIn(string filename, size_t u_type) {
 	// failed to login
 	ifs.close();
 	cout << "\nLogin failed..." << endl;
-	system("pause");
-	system("cls");
+	// call resetScreen utility
+	resetScreen();
 	return ;
 }
 
@@ -176,47 +179,266 @@ bool UserInterface::registerUser() {
 	// close file and clear screen
 	ofs.close();	// close output stream file
 	cout << "\nAccount created successfully." << endl;
-	system("pause");
-	system("cls");
+	// call resetScreen utility
+	resetScreen();
 	return true;
 }
 
 // main function to keep the system running
 void UserInterface::spin() {
-	size_t select = 0; // variable to store the user's option input
+	// to avoid invalid input such as letters, use `string` for user input
+	string select = "0"; // variable to store the user's option input
 
 	while (true) {
 		this->openMenu();
 		cin >> select; // obtain the user's input
-
-		switch (select)  // invokes different interface based on user's option
-		{
-		case 1: {
-			this->loginIn(MEMBER_FILE, 1);
-			break;
+		// invokes different interface based on user's option
+		if (select == "1") {
+			// [TODO]: finalize the member options
+			this->loginIn(MEMBER_FILE, 1); 
 		}
-		case 2: {
+		else if (select == "2") {
 			system("cls");
-			cout << endl;
+			std::cout << std::endl;
 			if (this->registerUser()) {
-				cout << "You can now login with the new account!\n" << endl;
+				std::cout << "You can now login with the new account!\n" << std::endl;
 			}
-			break;
 		}
-		case 3: {
-			cout << "System admin menu" << endl; // [TODO]
-			this->loginIn(ADMIN_FILE, 3);
-			break;
+		else if (select == "3") {
+			std::cout << "(Under Development ...) System admin menu" << std::endl; // [TODO]
+			//this->loginIn(ADMIN_FILE, 3); [TODO]
 		}
-		case 0: {
-			cout << "\n\nThank you for using the Stock Trade System!" << endl;
-			system("pause");
+		else if (select == "0") {
+			std::cout << "\n\nThank you for using the Stock Trade System!" << endl;
+			// call resetScreen utility
+			resetScreen();
+			return;
+		}
+		else {
 			system("cls");
-			return ;
+			std::cout << "\nInvalid option, please re-select a valid option.\n" << endl;
 		}
-		default:
+	} // end of while loop
+}
+
+
+//// Private utilities
+// run Account member submenu
+void UserInterface::runMemberUI(std::shared_ptr<Member> &m_ptr) {
+	
+	/* [TODO]: REMOVE this block
+	cout << "Testing..." << endl;
+	m_ptr->portfolio_ptr->displayFundInfo();
+
+	m_ptr->portfolio_ptr->showPositions();
+	m_ptr->portfolio_ptr->showAllTradeRecords();
+	*/
+
+	while (true) {
+		// display a welcome message
+		cout << "\n\t\t========= Welcome: " << m_ptr->getUserName() << " =========" << endl;
+		// invokes member's submenu
+		this->openMemberMenu();
+		// define variable to store user input for menu selection
+		string select;
+		// ask for user input
+		cin >> select;	// obtain user's input
+
+		// action based on user input
+		if (select == "1") // show current portfolio positions
+		{
+			system("cls");		// clear current screen
+			cout << endl;		// adjust spacing
+			
+			// call Portfolio::showPositions() interface
+			m_ptr->portfolio_ptr->showPositions();
+			
+			// call resetScreen utility
+			resetScreen();
+		}
+		else if (select == "2") // deposit money into portfolio
+		{
+			double amt;		// variable to store user input
+			cout << "Please enter the amount to deposit: ";
+			// check if the amount entered is a valid input
+			if (cin >> amt) {
+				// if valid call `Member::depositMoney(double)` interface
+				m_ptr->depositMoney(amt);
+			}
+			else	// invalid user input
+			{
+				cout << "\nInvalid input. " 
+					 << "Deposit operation unsuccessful." 
+					 << endl;
+				cin.clear();
+				while (cin.get() != '\n'); // empty loop
+			}
+			
+			// call resetScreen utility
+			resetScreen();
+		}
+		else if (select == "3") // withdraw money from portfolio
+		{
+			cout << "\nAvailable cash in portfolio to withdraw: $"
+				<< m_ptr->portfolio_ptr->getAvailableFund()
+				<< endl << endl;
+
+			double amt;		// variable to store user input
+			cout << "Please enter the amount to withdraw: ";
+			// check if the amount entered is a valid input
+			if (cin >> amt) {
+				// if valid call `Member::depositMoney(double)` interface
+				m_ptr->withdrawMoney(amt);
+			}
+			else	// invalid user input
+			{
+				cout << "\nInvalid input. "
+					<< "Withdrawal operation unsuccessful."
+					<< endl;
+				cin.clear();
+				while (cin.get() != '\n'); // empty loop
+			}
+
+			// call resetScreen utility
+			resetScreen();
+		}
+		else if (select == "4") // buy a single stock
+		{
+			cout << "\n\tAvailable cash in portfolio for investment: $"
+				<< m_ptr->portfolio_ptr->getAvailableFund()
+				<< endl << endl
+				<< "\tService charge for a successful order: $" << SERVICE_CHARGE
+				<< endl;
+
+			// define variables to accept user's input
+			string sym;		// stock symbol
+			size_t num;		// number of shares
+			cout << "\n\tEnter the stock's symbol to buy: ";
+			cin >> sym;
+			cout << "\n\tEnter the number of shares to buy: ";
+			// check if the amount entered is a valid input
+			if (cin >> num) {
+				cout << endl;
+				// if valid call `Member::buyStock(string, size_t)` interface
+				m_ptr->buyStock(sym, num);
+			}
+			else	// invalid user input
+			{
+				cout << "\nInvalid input. "
+					<< "Buy Stock action unsuccessful."
+					<< endl;
+				cin.clear();
+				while (cin.get() != '\n'); // empty loop
+			}
+
+			// call resetScreen utility
+			resetScreen();
+		}
+		else if (select == "5") // sell a single stock
+		{
+			system("cls"); // clean up the screen
+			cout << "\n\tCurrent stock positions " 
+				 << "(Note: actual trade price can fluctuate): "
+				 << endl << endl;
+			m_ptr->portfolio_ptr->displayStockInfo();
+			cout << "\n\tService charge for a successful order: $" << SERVICE_CHARGE
+				 << endl;
+
+			// define variables to accept user's input
+			string sym;		// stock symbol
+			size_t num;		// number of shares
+			cout << "\n\tEnter the stock's symbol to sell: ";
+			cin >> sym;
+			cout << "\n\tEnter the number of shares to sell: ";
+			// check if the amount entered is a valid input
+			if (cin >> num) {
+				cout << endl;
+				// if valid call `Member::sellStock(string, size_t)` interface
+				m_ptr->sellStock(sym, num);
+			}
+			else	// invalid user input
+			{
+				cout << "\nInvalid input. "
+					<< "Sell Stock action unsuccessful."
+					<< endl;
+				cin.clear();
+				while (cin.get() != '\n'); // empty loop
+			}
+
+			// call resetScreen utility
+			resetScreen();
+		}
+		else if (select == "6") // display all trade records for current portfolio
+		{
+			// showing all trade records for the current portfolio
+			cout << "\nAll trading records of the portfolio:\n" << endl;
+			// call `Portfolio::showAllTradeRecords` interface to show all records
+			m_ptr->portfolio_ptr->showAllTradeRecords();
+
+			// call resetScreen utility
+			resetScreen();
+		}
+		else if (select == "7") // display trade records of a single stock in portfolio
+		{
+			// define a variable to store user input
+			std::string sym;
+			// showing trade records for a single stock
+			cout << "\nEnter the stock symbol for trade record: ";
+			cin >> sym;
+			// call `Portfolio::showTradeRecord(sym)` to show records of a stock
+			cout << "\nTrade records of stock <" << sym << ">: " << endl << endl;
+			m_ptr->portfolio_ptr->showTradeRecord(sym);
+
+			// call resetScreen utility
+			resetScreen();
+		}
+		else if (select == "M" || select == "m") // display market stock data
+		{	
+			system("cls"); 
+			// call `StockExchange::displayMarket` interface to display martket info
+			this->exchange_ptr->displayMarket();
+		}
+		else if (select == "0") {
+			cout << "\nExiting Member page."
+				<< " Press any key to the main menu ..."
+				<< endl;
+			
+			// call resetScreen utility
+			resetScreen();
+			return;
+		}
+		else {
 			system("cls");
-			cout << "\nInvalid option, please re-select a valid option.\n" << endl;
+			std::cout << "\nInvalid option, please select a valid option to continue\n\n"
+				<< std::endl;
 		}
 	}
+
+}
+
+// display member submenu
+void UserInterface::openMemberMenu() const {
+	cout << endl << "\t\tAction menu:" << endl;
+	cout << "\t\t---------------------------------------\n";
+	cout << "\t\t|                                     |\n";
+	cout << "\t\t|   1. Show Portfolio Positions       |\n";
+	cout << "\t\t|                                     |\n";
+	cout << "\t\t|   2. Deposit Money to Portfolio     |\n";
+	cout << "\t\t|                                     |\n";
+	cout << "\t\t|   3. Withdraw Money from Portfolio  |\n";
+	cout << "\t\t|                                     |\n";
+	cout << "\t\t|   4. Buy Stock                      |\n";
+	cout << "\t\t|                                     |\n";
+	cout << "\t\t|   5. Sell Stock                     |\n";
+	cout << "\t\t|                                     |\n";
+	cout << "\t\t|   6. Display All Trade Records      |\n";
+	cout << "\t\t|                                     |\n";
+	cout << "\t\t|   7. Display Single Stock Records   |\n";
+	cout << "\t\t|                                     |\n";
+	cout << "\t\t|   M. Display Market                 |\n";
+	cout << "\t\t|                                     |\n";
+	cout << "\t\t|   0. Exit                           |\n";
+	cout << "\t\t|                                     |\n";
+	cout << "\t\t --------------------------------------\n";
+	cout << "Please enter your action: ";
 }

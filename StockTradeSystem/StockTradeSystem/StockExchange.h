@@ -3,7 +3,7 @@
  * Author: M. Tang
  * Maintainer: M. Tang
  * Creation Date: 2024-Feb-27
- * Previous Edit: 2024-March-01
+ * Previous Edit: 2024-March-04
  * -------------------------------------------------------------------------- */
 
 #pragma once
@@ -13,10 +13,12 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 #include <memory>
 #include <string>
 #include <ctime>
 #include <map>
+#include <set>
 //#include <ctime>
 using namespace std;
 
@@ -39,16 +41,22 @@ public:
 
 	//// Public interfaces
 	// get current price of of a particular stock - arg: <string> symbol
-	double getPrice(const string) const;
+	double getPrice(const string);
+	// get multiple stock prices at once
+	map<string, double> getMultiPrices(set<string>);
+	// display stock market price information
+	void displayMarket();
+	// get stock trade record based on a specific `trade_id`
+	shared_ptr<StockTrade> &getSingleStockTrade(const string);
 	// get the price history of a particular stock - arg: <string> symbol
 	map<string, double> getStockHist(const string) const;
 	// place StockTrade order
 	bool placeOrder(shared_ptr<StockTrade> &);
 	// convert system time to string in "YYYYMMDDhhmmss" format
-	string convertTimeToString(std::time_t &);
+	string convertTimeToString(const std::time_t &);
 
 
-//private: // [TODO]: uncomment the private keyword after testing
+private: // [TODO]: uncomment the private keyword after testing
 	//// Private utilities
 	// update all stocks' prices in the market
 	void updateMarket();
@@ -62,6 +70,12 @@ public:
 	void loadStockHist();
 	// load trade history
 	void loadTradeHist();
+	// write stock price information to file - truncate mode
+	void writePriceToFile() const;
+	// write stock prices into stock history file - truncate mode
+	void writeStockToFile() const;
+	// write exchange data to file - truncate mode
+	void writeExchangeToFile() const;
 
 
 	//// Data members
@@ -71,7 +85,7 @@ public:
 	/* price history of each individual stock
 	 * stocks and their historical prices: {symbol: {string, trade_price}}
 	 */
-	map<string, map<string, double>> stock_hist;
+	map<string, map<string, double> > stock_hist;
 	// count of total number of trade events
 	size_t trade_counts;
 	// history of all trade records: {trade_id, shared_ptr<StockTrade>}

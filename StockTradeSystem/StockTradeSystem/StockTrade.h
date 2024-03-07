@@ -16,18 +16,24 @@ using namespace std;
 
 #include "Common.h"
 #include "StockExchange.h"
+#include "Portfolio.h"
+
+class Portfolio;
+class StockExchange;
 
 struct StockTrade {
-	//friend StockExchange;
+
+	friend StockExchange;
+	friend Portfolio;
 
 public:
 	//// Constructors and copy-control members
 	// default constructor
 	StockTrade();
 	// parameterized constructor
-	StockTrade(string symbol, size_t num, TRADETYPE t_type);
+	StockTrade(const string symbol, const size_t num, const TRADETYPE t_type);
 	// parameterized constructor with full input
-	StockTrade(string t_id, string sym, size_t num, double p, TRADETYPE tt, ORDERSTATUS os);
+	StockTrade(const string t_id, const string sym, const size_t num, const double p, const TRADETYPE tt, const ORDERSTATUS os);
 	// destructor
 	~StockTrade();
 	
@@ -54,6 +60,10 @@ public:
 	string getTradeId() const;
 	// set trade status
 	bool setStatus(const ORDERSTATUS);
+	// get trade status
+	ORDERSTATUS getStatus() const;
+	// display information of the current `StockTrade` object
+	void displayData() const;
 
 }; //  end of struct `StockTrade`
 

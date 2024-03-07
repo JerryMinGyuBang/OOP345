@@ -3,7 +3,7 @@
  * Author: M. Tang
  * Maintainer: M. Tang
  * Creation Date: 2024-Feb-29
- * Previous Edit: 2024-March-02
+ * Previous Edit: 2024-March-06
  * -------------------------------------------------------------------------- */
 
 #include "StockExchange.h"
@@ -33,7 +33,9 @@ StockExchange::~StockExchange() {
 
 //// Public interfaces
 // get current price of of a particular stock - arg: <string> symbol
-double StockExchange::getPrice(const string symbol) const {
+double StockExchange::getPrice(const string symbol) {
+	// first update the market before attempting to check a specific stock price
+	this->updateMarket();
 	try 
 	{
 		if (stock_list.find(symbol) != stock_list.cend()) {
@@ -52,6 +54,50 @@ double StockExchange::getPrice(const string symbol) const {
 	}
 }
 
+// get multiple stock prices at once
+map<string, double> StockExchange::getMultiPrices(set<string> query_symbols) {
+	// first update the market before querying information
+	this->updateMarket();
+	// define return variable
+	map<string, double> ret;
+	// traverse the `stock_list` to search for each stock information
+	for (const string &ele : query_symbols) {
+		try {
+			auto it = stock_list.find(ele);
+			if (it != stock_list.end()) {
+				ret.insert(*it);
+			}
+			else {
+				throw std::runtime_error("Symbol not found.");
+			}
+		}
+		catch (const std::exception &e) {
+			cerr << "Failed to get price for symbol <" << ele << ">: "
+				<< e.what()
+				<< endl;
+		}
+	}
+	return ret;
+}
+
+// display stock market price information
+void StockExchange::displayMarket() {
+	// first update market to refresh market information
+	this->updateMarket();
+	// display market stock prices information
+	std::cout << "\nStock-Price at (YYYYMMDDhhmmss): "
+		<< this->convertTimeToString(this->prev_update_t) 
+		<< endl << endl;
+	// using a lambda function to display the market information
+	std::for_each(stock_list.cbegin(), stock_list.cend(),
+		[](const std::pair<std::string, double>& p_) {
+			std::cout << p_.first << ": $" << p_.second << std::endl; });
+}
+
+// get stock trade record based on a specific `trade_id`
+shared_ptr<StockTrade> &StockExchange::getSingleStockTrade(const string t_id) {
+	return (this->trade_hist).find(t_id)->second;
+}
 
 // get the price history of a particular stock - arg: <string> symbol
 map<string, double> StockExchange::getStockHist(const string symbol) const {
@@ -79,15 +125,27 @@ map<string, double> StockExchange::getStockHist(const string symbol) const {
 }
 
 // place StockTrade order
-bool StockExchange::placeOrder(shared_ptr<StockTrade> &) {
-	return true; // [TODO]
+bool StockExchange::placeOrder(shared_ptr<StockTrade> &st_ptr)
+{
+	if (this->processOrder(st_ptr)) // if order is successfully processed 
+	{
+		// if success, write changes to file
+		this->writeExchangeToFile();
+		std::cout << "Trade order processed successfully." << endl;
+		return true;
+	}
+	else // trade order was not processed
+	{
+		std::cout << "Order process declined." << endl;
+		return false;
+	}
 }
 
 // convert system time to string in "YYYYMMDDhhmmss" format
 /* Reference:
  * https://stackoverflow.com/questions/997946/how-to-get-current-time-and-date-in-c
 **/
-string StockExchange::convertTimeToString(std::time_t &t) {
+string StockExchange::convertTimeToString(const std::time_t &t) {
 	char timedisplay[100];
 	struct tm buf;
 	errno_t err = localtime_s(&buf, &t);
@@ -100,15 +158,66 @@ string StockExchange::convertTimeToString(std::time_t &t) {
 
 //// Private utilities
 // update all stocks' prices in the market
+/*
+ * [NOTE]: the logic flow of this function is subject to changes to
+ * incoporate different update mechanisms.
+ **/
 void StockExchange::updateMarket() {
+	time_t cur_t = getCurrentTime();	// obtain current time
+	std::string cur_t_str = this->convertTimeToString(cur_t); // time_t to string
+	// market data is updated only if the previous update is before UPDATE_DURATION
+	if (cur_t - this->prev_update_t > UPDATE_DURATION) {
+		this->prev_update_t = cur_t; // set prev_update_t to current time
+		// update each stock independently
+		for (auto it = stock_list.begin(); it != stock_list.end(); ++it) {
+			// update the stock price
+			if (UPDATE_RULE == 1) // 1 - standard normal
+			{
+				it->second += getStandardNormalRN(); // uses a  random standard normal val
+			}
+			// else if (...) {} // add other update rule
+			else 
+			{ 
+				it->second += 0.0; // default: 0 - no change
+			}
+			// append the newest price into the `stock_hist` container
+			(this->stock_hist)[it->first][cur_t_str] = it->second;
+		}
+		// write the updated prices to file - individual price changed
+		this->writePriceToFile();
+		// write the stock history to file - stock's history changed
+		this->writeStockToFile();
+		// write exchange data to file - `prev_update_t` changed
+		this->writeExchangeToFile();
+	}
 
-	return ; // [TODO]
+	return ;
 }
 
 // process an individual oreder, update the status of the order
-bool StockExchange::processOrder(shared_ptr<StockTrade> &) {
-	
-	return true; // [TODO]
+bool StockExchange::processOrder(shared_ptr<StockTrade> &st_ptr)
+{
+	// action based on status of the `StockTrade` object
+	if (st_ptr->status == ORDERSTATUS::PENDING) 
+	{
+		// set order status to FINISHED
+		st_ptr->setStatus(ORDERSTATUS::FINISHED);
+		// insert current `StockTrade` pointer to `trade_hist`
+		(this->trade_hist).insert(std::pair<string, shared_ptr<StockTrade> >(st_ptr->trade_id, st_ptr));
+		// update `trade_counts`
+		this->trade_counts = (this->trade_hist).size();
+	}
+	else if (st_ptr->status == ORDERSTATUS::CANCELLED)
+	{
+		std::cout << "Discarding CANCELLED trade order..." << endl;
+		return false;
+	}
+	else 
+	{
+		std::cout << "Invalid trade order status for processing." << std::endl;
+		return false;
+	}
+	return true;
 }
 
 // display trade history - called by admin
@@ -241,13 +350,14 @@ void StockExchange::loadTradeHist() {
 			// obtain data in the order of: id, sym, trade_type, quantity, price, status
 			iss >> t_id >> sym >> trade_type >> quantity >> price >> order_status;			
 			// construct shared_ptr and stores into container
-			trade_hist[t_id] = std::make_shared<StockTrade>(t_id,
-															sym,
-															quantity,
-															price,
-															getTradeTypeFromInt(trade_type),
-															getOrderStatusFromInt(order_status)
-															);
+			trade_hist[t_id] = std::make_shared<StockTrade>(
+				t_id,
+				sym,
+				quantity,
+				price,
+				getTradeTypeFromInt(trade_type),
+				getOrderStatusFromInt(order_status)
+				);
 		}
 		ifs.close();
 	}
@@ -259,4 +369,92 @@ void StockExchange::loadTradeHist() {
 
 }
 
+// write stock price information to file - truncate mode
+void StockExchange::writePriceToFile() const {
+	// define variables for file handling
+	ofstream ofs;	// output file stream
 
+	try {
+		// open the stock file in output and truncation modes
+		ofs.open(STOCK_FILE, ofstream::out | ofstream::trunc);
+		// each row stores the stock symbol and price, space separated
+		for (const auto &ele : stock_list) {
+			ofs << std::fixed << std::setprecision(2)		// keep two decimal places
+				<< ele.first << " " << ele.second << endl; // newline at the row's end
+		}
+		// close file when finishes writting
+		ofs.close();
+	}
+	catch (const std::exception &e) {
+		cerr << "An error occurs when writting to <"
+			<< STOCK_FILE << ">: "
+			<< e.what()
+			<< endl;
+	}
+	return ;
+}
+
+// write current stock price into stock history file - truncate mode
+void StockExchange::writeStockToFile() const {
+	// define variables for file handling
+	ofstream ofs;	// output file stream
+	string file_prefix = "stock_";	// prefix of individual stock file
+	string stock_sym;				// symbol of current stock
+
+	for (auto cit = stock_hist.cbegin(); cit != stock_hist.cend(); ++cit) 
+	{
+		stock_sym = cit->first;	// the first element is the stock symbol
+		try {
+			// open the file "stock_<symbol>.txt" in output and truncation mode
+			ofs.open(file_prefix + stock_sym + ".txt", ofstream::out | ofstream::trunc);
+			// each row stores the time and price of an update for current stock
+			for (auto c_sit = (cit->second).cbegin(); c_sit != (cit->second).cend(); ++c_sit) {
+				ofs << c_sit->first << " " 
+					<< std::fixed << std::setprecision(2)	// keep two decimal places
+					<< c_sit->second << endl;				// newline at the end
+			}
+			ofs.close(); // close file when finishes writing
+		}
+		catch (const std::exception &e) {
+			cerr << "An error occurs when writting to <"
+				<< file_prefix + stock_sym + ".txt" << ">: "
+				<< e.what()
+				<< endl;
+		}
+	}
+	return ;
+}
+
+// write exchange data to file
+void StockExchange::writeExchangeToFile() const {
+	// define variables for file handling
+	ofstream ofs;	// output file stream
+
+	try {
+		// open the exchange file in output and truncation modes
+		ofs.open(EXCHANGE_FILE, ofstream::out | ofstream::trunc); 
+		// first line stores the `prev_update_t` member
+		ofs << this->prev_update_t << std::endl; // newline at the end
+		// second row and onwards are StockTrade records
+		for (auto cit = trade_hist.cbegin(); cit != trade_hist.cend(); ++cit)
+		{
+			// traverse the `trade_hist` member to retrieve the data
+			ofs << cit->first << " "; // first element is the `trade_id`
+			ofs << cit->second->stock_symbol << " ";	// `stock_symbol`
+			ofs << cit->second->trade_type << " ";		// `trade_type`
+			ofs << cit->second->quantity << " ";		// `quantity`
+			ofs << cit->second->price << " ";			// `price`
+			ofs << cit->second->status					// last element of a row: `status`
+				<< endl;								// newline at the end
+		}
+		ofs.close(); // close file when finishes writing
+
+	}
+	catch (const std::exception &e) {
+		cerr << "An error occurs when writting to <"
+			<< EXCHANGE_FILE << ">: "
+			<< e.what()
+			<< endl;
+	}
+	return ;
+}

@@ -3,7 +3,7 @@
  * Author: M. Tang
  * Maintainer: M. Tang
  * Creation Date: 2024-Feb-27
- * Previous Edit: 2024-Feb-28
+ * Previous Edit: 2024-March-06
  * -------------------------------------------------------------------------- */
 
 #pragma once
@@ -21,13 +21,18 @@ public:
 	// default constructor
 	Account();
 	// parameterized constructor
-	Account(string, string);
+	Account(const string, const string);
 	// copy constructor
 	Account(const Account &);
 	// copy-assignment operator
 	Account &operator=(const Account &);
 	// destructor - pure virtual function
 	virtual ~Account() = 0;
+
+
+	//// Public interfaces
+	// get user name
+	string getUserName() const;
 
 private:
 	//// Data members

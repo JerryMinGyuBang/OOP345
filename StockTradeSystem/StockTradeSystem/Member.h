@@ -3,7 +3,7 @@
  * Author: M. Tang
  * Maintainer: M. Tang
  * Creation Date: 2024-Feb-27
- * Previous Edit: 2024-Feb-28
+ * Previous Edit: 2024-March-05
  * -------------------------------------------------------------------------- */
 
 #pragma once
@@ -17,16 +17,23 @@ using namespace std;
 
 #include "Account.h"
 #include "Portfolio.h"
+#include "StockExchange.h"
+//#include "UserInterface.h" // [TODO]: remove this line
 
+
+// forward declaration
+class Portfolio;
+class StockExchange;
+class UserInterface;
 
 // class `Member` - derived class of `Account`
 class Member : public Account {
+	friend UserInterface;
+
 public:
 	//// Constructors and copy-control members
-	// default constructor
-	Member();
-	// parameterized constructor
-	Member(string name, string pwd, double fund=0.0);
+	// default constructor - parameters <name, password, exchange_ptr>
+	Member(const string, const string pwd, shared_ptr<StockExchange> &);
 	// copy constructor
 	Member(const Member &);
 	// copy-assignment operator
@@ -36,24 +43,22 @@ public:
 
 
 	//// Public interfaces
+	// get the smart pointer to portfolio data member
+	std::shared_ptr<Portfolio> &getPortfolioPtr();
 	// deposit available fund (add money into account)
-	bool depositMoney(double);
+	bool depositMoney(const double);
 	// withdraw money from available fund (get money out from account)
-	bool withdrawMoney(double);
+	bool withdrawMoney(const double);
 	// buy a stock
-	bool buyStock(string symbol, size_t num);
+	bool buyStock(const string symbol, const size_t num);
 	// sell a stock
-	bool sellStock(string symbol, size_t num);
+	bool sellStock(const string symbol, const size_t num);
 
 
 private:
 	//// Data members
-	// available fund to invest
-	double available_fund;
-	// total cash deposited since account creation
-	double total_invest;
-	// portfolio object associated with the account
-	Portfolio portfolio;
+	// shared_ptr points to a portfolio object associated with the account
+	std::shared_ptr<Portfolio> portfolio_ptr;
 
 };
 

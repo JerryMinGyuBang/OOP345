@@ -3,7 +3,7 @@
  * Author: M. Tang
  * Maintainer: M. Tang
  * Creation Date: 2024-March-02
- * Previous Edit: 2024-March-02
+ * Previous Edit: 2024-March-05
  * -------------------------------------------------------------------------- */
 
 #include "Common.h"
@@ -71,4 +71,24 @@ time_t getCurrentTime() {
 	std::chrono::time_point<std::chrono::system_clock> now = std::chrono::system_clock::now();
 	std::time_t curr_time = std::chrono::system_clock::to_time_t(now);
 	return curr_time;
+}
+
+// get a random number from the standard normal distribution
+double getStandardNormalRN() {
+	double ret;
+	// define the random number generator and the distribution
+	std::default_random_engine generator;
+	generator.seed((unsigned long long)(getCurrentTime()));
+	std::normal_distribution<double> distribution(0.0, 1.0);
+	// get a random value that is standard-normally distributed
+	ret = distribution(generator);
+	ret = (double)((int)(ret * 100)) / 100;	// keep only two decimal places
+	return ret;
+}
+
+// a helper function to reset the screen - WINDOWS only
+void resetScreen() {
+	std::cout << std::endl;		// adjust spacing
+	system("pause");	// wait for user to press any key
+	system("cls");		// clear screen before back to menu
 }

@@ -3,7 +3,7 @@
  * Author: M. Tang
  * Maintainer: M. Tang
  * Creation Date: 2024-Feb-27
- * Previous Edit: 2024-Feb-28
+ * Previous Edit: 2024-March-06
  * -------------------------------------------------------------------------- */
 
 #include "Account.h"
@@ -15,7 +15,9 @@ Account::Account() {
 }
 
 // parameterized constructor
-Account::Account(string un, string pwd) {
+Account::Account(const string un, const string pwd) 
+	: user_name(un), password(pwd)
+{
 
 }
 
@@ -26,9 +28,17 @@ Account::Account(const Account &rhs) {
 
 // copy-assignment operator
 Account &Account::operator=(const Account &rhs) {
-
-	return *this; // [TODO]
+	this->user_name = rhs.user_name;
+	this->password = rhs.password;
+	return *this;
 }
 
 // destructor - empty implementation for pure virtual fn
 Account::~Account() { }
+
+
+//// Public interfaces
+// get user name
+string Account::getUserName() const {
+	return this->user_name;
+}

@@ -10,6 +10,8 @@
 #include <fstream>
 #include <string>
 
+#include "Common.h"
+
 #include "Member.h"
 #include "Account.h"
 

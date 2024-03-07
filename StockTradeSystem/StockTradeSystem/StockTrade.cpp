@@ -15,14 +15,14 @@ StockTrade::StockTrade() : status(ORDERSTATUS::INCOMPLETE) {
 }
 
 // parameterized constructor
-StockTrade::StockTrade(string symbol, size_t num, TRADETYPE t_type)
+StockTrade::StockTrade(const string symbol, const size_t num, const TRADETYPE t_type)
 	: stock_symbol(symbol), quantity(num), trade_type(t_type), status(ORDERSTATUS::INCOMPLETE)
 {
 	//cout << "StockTrade::StockTrade(string symbol, size_t num, TRADETYPE t_type)" << endl; // [TODO]: remove this line
 }
 
 // parameterized constructor with full input
-StockTrade::StockTrade(string t_id, string sym, size_t num, double p, TRADETYPE tt, ORDERSTATUS os)
+StockTrade::StockTrade(const string t_id, const string sym, const size_t num, const double p, const TRADETYPE tt, const ORDERSTATUS os)
 	: trade_id(t_id), stock_symbol(sym), quantity(num), price(p), trade_type(tt), status(os)
 {
 	//cout << "StockTrade::StockTrade(string t_id, string sym, size_t num, double p, TRADETYPE tt, ORDERSTATUS os)" << endl; // [TODO]: remove this line
@@ -96,4 +96,20 @@ bool StockTrade::setStatus(const ORDERSTATUS s_) {
 		return false;
 	}
 	return true;
+}
+
+// get trade status
+ORDERSTATUS StockTrade::getStatus() const {
+	return this->status;
+}
+
+// display information of the current `StockTrade` object
+void StockTrade::displayData() const {
+	cout	<< trade_id << ": "
+			<< stock_symbol << " "
+			<< getTradeTypeAsString(trade_type) << " "
+			<< quantity << " "
+			<< "$" << price << " "
+			<< getOrderStatusAsString(status)
+			<< endl;
 }
