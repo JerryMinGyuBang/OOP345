@@ -7,9 +7,9 @@
 #include "User.h"
 #include "TradeRecord.h"
 
-void TradeRecord::addTrade(const std::string& stockSymbol, int stockglobalid, const std::string& stockTradeName, double price, const std::string& status, int UserID, double profitLoss)
+void TradeRecord::addTrade(const std::string& stockSymbol, int stockglobalid, const std::string& stockTradeName, double price, const std::string& status, int UserID)
 {
-    trades.push_back(std::make_tuple(stockSymbol, stockglobalid, stockTradeName, price, status, UserID, profitLoss));
+    trades.push_back(std::make_tuple(stockSymbol, stockglobalid, stockTradeName, price, status, UserID));
 }
 
 int TradeRecord::getNumberOfTrades() const
@@ -27,7 +27,7 @@ TradeRecord::Trade TradeRecord::getTrade(int index) const
 
 void TradeRecord::displayTrades() const
 {
-    std::cout << "Trade Records:\n";
+    std::cout << "Trade Records:" << std::endl;
     for (int i = 0; i < trades.size(); ++i) {
         std::cout << "Trade " << i + 1 << std::endl;
         std::cout << "Stock Symbol: " << std::get<0>(trades[i]) << std::endl;
@@ -36,7 +36,6 @@ void TradeRecord::displayTrades() const
         std::cout << "Price: " << std::get<3>(trades[i]) << std::endl;
         std::cout << "Status: " << std::get<4>(trades[i]) << std::endl;
         std::cout << "UserID: " << std::get<5>(trades[i]) << std::endl;
-        std::cout << "Profit/Loss: " << std::get<6>(trades[i]) << std::endl;
         std::cout << "-----------------" << std::endl;
     }
 }
