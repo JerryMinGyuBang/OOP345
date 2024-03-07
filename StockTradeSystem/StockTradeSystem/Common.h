@@ -33,7 +33,7 @@
 // exchange service charge
 #define SERVICE_CHARGE	2
 // duration in seconds for every stock price update
-#define UPDATE_DURATION 10
+#define UPDATE_DURATION 1
 // update mechanism - 0: no change; 1 - standard normal
 #define UPDATE_RULE		1
 
