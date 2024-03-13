@@ -7,6 +7,7 @@
 #include <deque>
 #include <limits>
 #include <map>
+#include <utility>
 
 //including header files!
 #include "StockTrade.h"
@@ -24,10 +25,13 @@ int stockglobalid = 8;
 std::vector<StockTrade> vect;
 std::vector<User> vectuser;
 TradeRecord tradeRecord;
-//std::vector<User> users;
 std::vector<Trader> vectuser1;
 std::vector<std::pair<int, std::map<int, int>>> vec;
-
+std::vector<std::pair<std::string, double>> account;
+// to store the original values
+std::vector<double> originalValues;
+// to store the differences
+std::vector<double> differences;
 
 //option 1
 void Option1()
@@ -49,7 +53,7 @@ void Option1()
 		do
 		{
 			//Option 1 
-			std::cout << "Option 1 Menu" << std::endl;
+			std::cout << "Stock Exchange" << std::endl;
 			std::cout << "1: Buy" << std::endl;
 			std::cout << "2: Sell" << std::endl;
 			std::cout << "3: Display" << std::endl;
@@ -108,7 +112,10 @@ void Option1()
 				buy.setprice(temp7);
 
 				temp4 = buy.buy(m);
-				std::cout << "temp4" << temp4 << std::endl;
+
+				
+
+
 				temp5 = buy.getQuantity();
 				temp1 = buy.getBalance();
 
@@ -147,6 +154,11 @@ void Option1()
 
 					// After a successful buy operation
 					tradeRecord.addTrade(stockSymbol, stockId, stockTradeName, price, "Purchase", n);
+
+
+					//calculate the loss
+					double totaldif = (percentageChange/100) * m;
+					account.push_back(std::make_pair("Buy", -totaldif));
 				}
 				else {
 					std::cout << "insufficent fund" << std::endl;
@@ -203,6 +215,7 @@ void Option1()
 				temp4 = sell.SoldFee(m);
 
 				
+				
 
 
 				if (temp4 <= temp6) {
@@ -229,7 +242,17 @@ void Option1()
 
 					// After a successful sell operation
 					tradeRecord.addTrade(stockSymbol, stockId, stockTradeName, price, "Sold", n);
+
+
+
+					//calculate the loss
+					double totaldif = (percentageChange / 100) * m;
+					account.push_back(std::make_pair("Sell", -totaldif));
+
 					system("pause");
+
+
+
 
 				}
 				else {
@@ -283,10 +306,10 @@ void Option2()
 		do
 		{
 			//Option 2 
-			std::cout << "Option 2 Menu" << std::endl;
-			std::cout << "1: Display StockBroker Information" << std::endl;
-			std::cout << "2: Add StockBroker Information" << std::endl;
-			std::cout << "3: Remove StockBroker Information" << std::endl;
+			std::cout << "Stock Information Menu" << std::endl;
+			std::cout << "1: Display Stock Information" << std::endl;
+			std::cout << "2: Add Stock Information" << std::endl;
+			std::cout << "3: Remove Stock Information" << std::endl;
 			std::cout << "10: clear screen" << std::endl;
 			std::cout << "0: Return to main menu" << std::endl;
 			std::cout << "Enter selection:" << std::endl;
@@ -406,7 +429,7 @@ void Option3()
 		do
 		{
 			//Option 3 
-			std::cout << "Option 3 Menu" << std::endl;
+			std::cout << "Portfolio Menu" << std::endl;
 			std::cout << "1: Add User" << std::endl;
 			std::cout << "2: Remove User" << std::endl;
 			std::cout << "3: Display All User" << std::endl;
@@ -557,7 +580,7 @@ void Option4()
 		do
 		{
 			//Option 4
-			std::cout << "Option 4 Menu" << std::endl;
+			std::cout << "Trade Record History Menu" << std::endl;
 			std::cout << "1: Display Trade Record" << std::endl;
 			std::cout << "10: clear screen" << std::endl;
 			std::cout << "0: Return to main menu" << std::endl;
@@ -573,6 +596,10 @@ void Option4()
 				std::cout << "_____________________________________________" << std::endl;
 				tradeRecord.displayTrades();
 				system("pause");
+			}
+			else if (selection == 10)
+			{
+				system("CLS");
 			}
 			else
 			{
@@ -595,8 +622,8 @@ void Option5()
 		do
 		{
 			//Option 5
-			std::cout << "Option 5 Menu" << std::endl;
-			std::cout << "1: Next Turn" << std::endl;
+			std::cout << "Refresh Menu" << std::endl;
+			std::cout << "1: Refresh" << std::endl;
 			std::cout << "10: clear screen" << std::endl;
 			std::cout << "0: Return to main menu" << std::endl;
 			std::cout << "Enter selection:" << std::endl;
@@ -612,13 +639,17 @@ void Option5()
 
 				std::srand(static_cast<unsigned>(std::time(0)));
 
+				
+
+
 				// to store the percentage changes
 				std::deque<double> percentageChanges;
 
 				for (int i = 1; i <= vect.size(); i++) {
+					originalValues.push_back(vect[i - 1].getStockPrice());
 					percentageChanges.push_back(StockPriceNext::modifyStockPrice(vect, i));
 				}
-
+				differences.clear();
 				std::cout << "----------- Show Info -----------" << std::endl;
 				for (int i = 1; i < vect.size() + 1; i++) {
 					std::string temp1 = vect[i - 1].getStockTrade();
@@ -627,10 +658,76 @@ void Option5()
 						vect[i - 1].showInfo();
 
 					}
-					std::cout << "Changed by: " << percentageChanges[i - 1] << " % " << std::endl;
+					std::cout << "Stock Changed by: " << percentageChanges[i - 1] << " % " << std::endl;
+					//double difference = vect[i - 1].getStockPrice() - originalValues[i - 1]; 
+					//differences.push_back(difference);
+					//std::cout << "Difference after change: " << difference << std::endl;
+					//std::cout << std::endl;
+					double difference = vect[i - 1].getStockPrice() - originalValues[i - 1];
+					
+					originalValues[i - 1] += difference;
+					differences.push_back(originalValues[i - 1]);
+					std::cout << "Original value after change: " << originalValues[i - 1] << std::endl;
 					std::cout << std::endl;
+					
+
 				}
 				system("pause");
+			}
+			else if (selection == 10)
+			{
+				system("CLS");
+			}
+			else
+			{
+				std::cout << "Please Enter the correct number choices in menu" << std::endl;
+			}
+
+		} while (selection != 0);
+	}
+	catch (const CustomException& e) {
+		std::cerr << "Caught an exception: " << e.what() << std::endl;
+		std::cout << "Please Try Agian" << std::endl;
+		std::cout << "Reset" << std::endl;
+		Option5();
+	}
+}
+void Option6()
+{
+	try {
+		int selection;
+		do
+		{
+			//Option 5
+			std::cout << "Stock Difference Menu" << std::endl;
+			std::cout << "1: loss" << std::endl;
+			std::cout << "2: Difference after refresh" << std::endl;
+			std::cout << "10: clear screen" << std::endl;
+			std::cout << "0: Return to main menu" << std::endl;
+			std::cout << "Enter selection:" << std::endl;
+			std::cin >> selection;
+			if (std::cin.fail()) {
+				std::cin.clear();
+				std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+				throw CustomException("Invalid input. Please enter a number.");
+			}
+			if (selection == 1)
+			{
+				std::cout << "_____________________________________________" << std::endl;
+				for (const auto& pair : account) {
+					std::cout << "Type: " << pair.first << ", loss$: " << pair.second << std::endl;
+				}
+
+			}
+			else if (selection == 2) {
+				std::cout << "_____________________________________________" << std::endl;
+				for (int i = 0; i < differences.size(); i++) {
+					std::cout << "Difference for trade ID " << (i + 1) << ": $" << differences[i] << std::endl;
+				}
+			}
+			else if (selection == 10)
+			{
+				system("CLS");
 			}
 			else
 			{
@@ -659,7 +756,8 @@ void MainMenu()
 			std::cout << "2: Stock Information (Including add/remove stock options)" << std::endl;
 			std::cout << "3: User Details (Including add/remove user)" << std::endl;
 			std::cout << "4: Display Trade Record History" << std::endl;
-			std::cout << "5: Next Turn" << std::endl;
+			std::cout << "5: Refresh" << std::endl;
+			std::cout << "6: Stock Difference (Profit/loss)" << std::endl;
 			std::cout << "10: clear screen" << std::endl;
 			std::cout << "0: End Program" << std::endl;
 			std::cout << "Enter selection:" << std::endl;
@@ -688,6 +786,10 @@ void MainMenu()
 			else if (selection == 5)
 			{
 				Option5();
+			}
+			else if (selection == 6)
+			{
+				Option6();
 			}
 			else if (selection == 10)
 			{
@@ -722,7 +824,7 @@ void Login()
 		int user = 0;
 		int attempt = 0;
 		while (true) {
-			std::cout << "Welcome To Stock TradingSystem." << std::endl;
+			std::cout << "Welcome To Stock Trading System." << std::endl;
 			std::cout << "Please enter your username and password." << std::endl;
 			std::cout << "For demonstration purposes the password and username is (1111)" << std::endl;
 			std::cout << "Username:" << std::endl;
