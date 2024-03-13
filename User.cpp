@@ -75,6 +75,5 @@ void User::showInfo() const
     std::cout << "Purchaser Id: " << getId() << std::endl;
     std::cout << "Purchaser Age: " << getAge() << std::endl;
     std::cout << "Balance Is: $" << getBalance() << std::endl;
-    std::cout << "Number Of Stocks: " << getQuantity() << std::endl;
     std::cout << std::endl;
 }
