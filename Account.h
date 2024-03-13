@@ -1,6 +1,7 @@
 #pragma once
 #include<iostream>
 #include "StockTrade.h"
+#include <string>
 
 class Account {
 public:
@@ -12,6 +13,7 @@ public:
 	double stockquantity = 0;
 	double stockquantityfinal = 100;
 	double stockprice = 50;
+	double totalProfit = 0;
 public:
 	Account()
 	{
@@ -48,6 +50,7 @@ public:
 	}
 };
 
+
 class Sell : public Account {
 public:
 	Sell()
@@ -73,6 +76,10 @@ public:
 	{
 		stockprice = p;
 	}
+	std::string getType()
+	{
+		return "sell";
+	}
 	void setBalance(double b)
 	{
 		balance = b;
@@ -88,6 +95,15 @@ public:
 	double getBalance()
 	{
 		return balance;
+	}
+	double sell(double c)
+	{
+		double buy = c;
+		stockquantity = buy / stockprice;
+		balance = buy - Purchasefee;
+		stockquantityfinal += stockquantity;
+		totalProfit += balance;  
+		return totalProfit;
 	}
 	~Sell()
 	{
@@ -114,6 +130,10 @@ public:
 	{
 		return stockquantityfinal;
 	}
+	std::string getType()
+	{
+		return "buy";
+	}
 	void setprice(double p)
 	{
 		stockprice = p;
@@ -133,6 +153,15 @@ public:
 	double getBalance()
 	{
 		return balance;
+	}
+	double buy1(double c)
+	{
+		double buy = c;
+		stockquantity = buy / stockprice;
+		balance = buy - Purchasefee;
+		stockquantityfinal += stockquantity;
+		totalProfit -= balance;  
+		return totalProfit;
 	}
 	~Purchase()
 	{
