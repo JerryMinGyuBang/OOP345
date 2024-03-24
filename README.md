@@ -12,6 +12,9 @@ Members:
 - Minooei
 - Tang
 
+Stock Trading System UI
+
+
 
 
 Creation date: 2024-Feb-10
