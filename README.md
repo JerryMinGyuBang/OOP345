@@ -14,6 +14,8 @@ Members:
 
 Stock Trading System UI
 
+Login Demonstration
+![alt text](https://github.com/JerryMinGyuBang/OOP345/blob/main/images/1.png?raw=true)
 
 
 
